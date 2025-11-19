@@ -1,0 +1,639 @@
+---
+alwaysApply: true
+---
+# Backend Development Patterns - Django & DRF
+
+## Critical Backend Rules
+
+### 🚨 Multi-Tenancy (MANDATORY)
+**Every entity MUST be scoped to a business**
+
+#### 1. Always Filter by Business
+```python
+def get_queryset(self):
+    """CRITICAL: Filter by business for multi-tenancy"""
+    return MyModel.objects.filter(
+        business=self.request.user.business
+    )
+```
+
+#### 2. Always Set Business on Create
+```python
+def perform_create(self, serializer):
+    """CRITICAL: Auto-set business and creator"""
+    serializer.save(
+        business=self.request.user.business,
+        created_by=self.request.user
+    )
+```
+
+#### 3. Use settings.AUTH_USER_MODEL
+```python
+# ✅ CORRECT
+from django.conf import settings
+
+class MyModel(models.Model):
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+# ❌ WRONG
+from django.contrib.auth.models import User  # Don't do this!
+```
+
+## Model Pattern (Multi-Tenant)
+
+### Standard Model Template
+```python
+from django.db import models
+from django.conf import settings
+
+class {Module}(models.Model):
+    """
+    {Description of what this model represents}
+    
+    Multi-tenant: Isolated by business
+    """
+    
+    # Multi-tenancy (CRITICAL: ALWAYS INCLUDE)
+    business = models.ForeignKey(
+        'business.Business',
+        on_delete=models.CASCADE,
+        related_name='{app}_{module}s',
+        help_text='Business this record belongs to'
+    )
+    
+    # Core fields
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    
+    # Status/state fields
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ]
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active'
+    )
+    
+    # Relationships (examples)
+    # category = models.ForeignKey(
+    #     'Category',
+    #     on_delete=models.SET_NULL,
+    #     null=True,
+    #     blank=True
+    # )
+    # tags = models.ManyToManyField('Tag', blank=True)
+    
+    # Audit fields (ALWAYS INCLUDE)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='{module}_created'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = '{app}_{module}s'
+        ordering = ['-created_at']
+        indexes = [
+            # CRITICAL: Index business + commonly queried fields
+            models.Index(fields=['business', 'status']),
+            models.Index(fields=['business', 'created_at']),
+            models.Index(fields=['business', 'name']),
+        ]
+        verbose_name = '{Module}'
+        verbose_name_plural = '{Module}s'
+    
+    def __str__(self):
+        return self.name
+    
+    # Business logic methods
+    @property
+    def is_active(self):
+        return self.status == 'active'
+    
+    def activate(self):
+        """Activate this record"""
+        self.status = 'active'
+        self.save(update_fields=['status'])
+    
+    def deactivate(self):
+        """Deactivate this record"""
+        self.status = 'inactive'
+        self.save(update_fields=['status'])
+```
+
+### Model Best Practices
+- ✅ Always add `business` ForeignKey
+- ✅ Always add audit fields (`created_by`, `created_at`, `updated_at`)
+- ✅ Use `blank=True, null=True` for optional fields
+- ✅ Add indexes for frequently queried fields (especially `business` + other fields)
+- ✅ Use choices for status fields
+- ✅ Add `help_text` for clarity
+- ✅ Implement `__str__()` method
+- ✅ Add business logic as methods/properties
+
+## Serializer Pattern
+
+### Full Serializer (Detail View)
+```python
+from rest_framework import serializers
+from apps.{app}.models import {Module}
+
+class {Module}Serializer(serializers.ModelSerializer):
+    """
+    Full serializer with computed fields.
+    Used for detail views and create/update operations.
+    """
+    
+    # Read-only computed fields
+    is_active = serializers.BooleanField(read_only=True)
+    created_by_name = serializers.SerializerMethodField()
+    
+    # Display fields (for choices)
+    status_display = serializers.CharField(
+        source='get_status_display',
+        read_only=True
+    )
+    
+    # Related object fields (optional)
+    # category_name = serializers.CharField(
+    #     source='category.name',
+    #     read_only=True
+    # )
+    
+    class Meta:
+        model = {Module}
+        fields = [
+            'id',
+            'name',
+            'description',
+            'status',
+            'status_display',
+            'is_active',
+            'created_by',
+            'created_by_name',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_created_by_name(self, obj):
+        """Get formatted creator name"""
+        if obj.created_by:
+            full_name = f"{obj.created_by.first_name} {obj.created_by.last_name}".strip()
+            return full_name or obj.created_by.email
+        return None
+    
+    def validate_name(self, value):
+        """Validate name field"""
+        if len(value) < 3:
+            raise serializers.ValidationError(
+                'Name must be at least 3 characters.'
+            )
+        return value
+    
+    def validate(self, data):
+        """Cross-field validation"""
+        # Example: Custom business logic validation
+        # if 'start_date' in data and 'end_date' in data:
+        #     if data['end_date'] < data['start_date']:
+        #         raise serializers.ValidationError({
+        #             'end_date': 'End date must be after start date.'
+        #         })
+        return data
+```
+
+### List Serializer (List View)
+```python
+class {Module}ListSerializer(serializers.ModelSerializer):
+    """
+    Lightweight serializer for list views.
+    Only includes essential fields for performance.
+    """
+    
+    class Meta:
+        model = {Module}
+        fields = ['id', 'name', 'status', 'created_at']
+```
+
+### Nested Serializers (for Relationships)
+```python
+# Read: Nested serializer
+class {Module}DetailSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(read_only=True)
+    tags = TagSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = {Module}
+        fields = '__all__'
+
+# Write: Use IDs
+class {Module}WriteSerializer(serializers.ModelSerializer):
+    category_id = serializers.IntegerField()
+    tag_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=False
+    )
+    
+    class Meta:
+        model = {Module}
+        fields = ['name', 'category_id', 'tag_ids']
+```
+
+## ViewSet Pattern
+
+### Standard ViewSet
+```python
+from rest_framework import viewsets, filters, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from apps.{app}.models import {Module}
+from apps.{app}.serializers import (
+    {Module}Serializer,
+    {Module}ListSerializer
+)
+
+class {Module}ViewSet(viewsets.ModelViewSet):
+    """
+    {Module} CRUD operations.
+    
+    Provides:
+    - list: GET /api/{module}s/
+    - retrieve: GET /api/{module}s/{id}/
+    - create: POST /api/{module}s/
+    - update: PUT /api/{module}s/{id}/
+    - partial_update: PATCH /api/{module}s/{id}/
+    - destroy: DELETE /api/{module}s/{id}/
+    """
+    
+    queryset = {Module}.objects.all()
+    permission_classes = [IsAuthenticated]
+    
+    # Filtering & Search
+    filter_backends = [
+        DjangoFilterBackend,
+        filters.SearchFilter,
+        filters.OrderingFilter
+    ]
+    filterset_fields = ['status']
+    search_fields = ['name', 'description']
+    ordering_fields = ['created_at', 'name']
+    ordering = ['-created_at']
+    
+    def get_serializer_class(self):
+        """Use lightweight serializer for list"""
+        if self.action == 'list':
+            return {Module}ListSerializer
+        return {Module}Serializer
+    
+    def get_queryset(self):
+        """
+        CRITICAL: Filter by business (multi-tenancy).
+        Always filter to prevent cross-tenant access.
+        """
+        return {Module}.objects.filter(
+            business=self.request.user.business
+        ).select_related(
+            'created_by'  # Optimize N+1 queries
+        )
+    
+    def perform_create(self, serializer):
+        """
+        CRITICAL: Auto-set business on create.
+        """
+        serializer.save(
+            business=self.request.user.business,
+            created_by=self.request.user
+        )
+    
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        """
+        Activate a {module}.
+        
+        POST /api/{module}s/{id}/activate/
+        """
+        {module} = self.get_object()
+        {module}.activate()
+        
+        serializer = self.get_serializer({module})
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['post'])
+    def deactivate(self, request, pk=None):
+        """
+        Deactivate a {module}.
+        
+        POST /api/{module}s/{id}/deactivate/
+        """
+        {module} = self.get_object()
+        {module}.deactivate()
+        
+        serializer = self.get_serializer({module})
+        return Response(serializer.data)
+    
+    @action(detail=False, methods=['get'])
+    def stats(self, request):
+        """
+        Get statistics.
+        
+        GET /api/{module}s/stats/
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        from django.db.models import Count
+        stats = {
+            'total': queryset.count(),
+            'active': queryset.filter(status='active').count(),
+            'inactive': queryset.filter(status='inactive').count(),
+        }
+        
+        return Response(stats)
+```
+
+## URL Pattern
+
+### Using Router
+```python
+# apps/{app}/urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import {Module}ViewSet
+
+router = DefaultRouter()
+router.register(r'{module}s', {Module}ViewSet, basename='{module}')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+```
+
+**Remember**: All API URLs are prefixed with `/api/` in main `core/urls.py`
+
+### Custom URLs (Non-ViewSet)
+```python
+from django.urls import path
+from .views import custom_view
+
+urlpatterns = [
+    path('{module}s/', custom_view, name='{module}-list'),
+    path('{module}s/<int:pk>/', custom_view, name='{module}-detail'),
+]
+```
+
+**CRITICAL**: Always end URLs with trailing slash `/`
+
+## Query Optimization
+
+### Avoid N+1 Queries
+
+#### Use select_related (ForeignKey)
+```python
+# ❌ BAD: N+1 query problem
+items = {Module}.objects.all()
+for item in items:
+    print(item.created_by.email)  # Hits database each time!
+
+# ✅ GOOD: Single query with JOIN
+items = {Module}.objects.select_related('created_by', 'business').all()
+for item in items:
+    print(item.created_by.email)  # No extra queries
+```
+
+#### Use prefetch_related (ManyToMany, Reverse FK)
+```python
+# ❌ BAD: N+1 query problem
+items = {Module}.objects.all()
+for item in items:
+    print(item.tags.all())  # Hits database each time!
+
+# ✅ GOOD: Two queries total
+items = {Module}.objects.prefetch_related('tags').all()
+for item in items:
+    print(item.tags.all())  # No extra queries
+```
+
+### Aggregations
+```python
+from django.db.models import Count, Sum, Avg, Max, Min
+
+# Count
+stats = {Module}.objects.aggregate(
+    total=Count('id'),
+    active_count=Count('id', filter=models.Q(status='active'))
+)
+
+# Sum/Avg
+financials = Invoice.objects.aggregate(
+    total_revenue=Sum('amount'),
+    average_invoice=Avg('amount')
+)
+
+# Annotate (per-item aggregation)
+categories = Category.objects.annotate(
+    product_count=Count('products')
+).filter(product_count__gt=0)
+```
+
+### Efficient Existence Checks
+```python
+# ❌ BAD: Loads all records into memory
+if {Module}.objects.filter(email=email).count() > 0:
+    pass
+
+# ✅ GOOD: Stops at first match
+if {Module}.objects.filter(email=email).exists():
+    pass
+```
+
+### Bulk Operations
+```python
+# Bulk create
+{Module}.objects.bulk_create([
+    {Module}(name='Item 1', business=business),
+    {Module}(name='Item 2', business=business),
+])
+
+# Bulk update
+items = {Module}.objects.filter(business=business)
+items.update(status='active')
+
+# Bulk delete
+{Module}.objects.filter(status='inactive').delete()
+```
+
+## Database Best Practices
+
+### Indexes
+```python
+class Meta:
+    indexes = [
+        # Single field
+        models.Index(fields=['business']),
+        
+        # Multi-field (order matters!)
+        models.Index(fields=['business', 'status']),
+        models.Index(fields=['business', 'created_at']),
+        
+        # Descending order
+        models.Index(fields=['business', '-created_at']),
+    ]
+```
+
+**Index Strategy**:
+- ✅ Index fields used in `filter()`, `order_by()`
+- ✅ Multi-field indexes for common filter combinations
+- ✅ Always include `business` in multi-tenant systems
+- ❌ Don't over-index (slows writes)
+
+### Migrations
+```bash
+# Create migration
+py manage.py makemigrations {app}
+
+# Review migration file
+cat apps/{app}/migrations/0001_initial.py
+
+# Apply migration
+py manage.py migrate
+
+# Rollback migration
+py manage.py migrate {app} {previous_migration_number}
+
+# Show migrations
+py manage.py showmigrations {app}
+```
+
+### Data Migrations
+```python
+# apps/{app}/migrations/0002_populate_data.py
+from django.db import migrations
+
+def populate_data(apps, schema_editor):
+    MyModel = apps.get_model('{app}', 'MyModel')
+    MyModel.objects.bulk_create([
+        MyModel(name='Item 1'),
+        MyModel(name='Item 2'),
+    ])
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('{app}', '0001_initial'),
+    ]
+    
+    operations = [
+        migrations.RunPython(populate_data),
+    ]
+```
+
+## Error Handling
+
+### ViewSet Error Handling
+```python
+from rest_framework.exceptions import ValidationError, NotFound
+
+class {Module}ViewSet(viewsets.ModelViewSet):
+    def perform_create(self, serializer):
+        # Validate business logic
+        if some_condition:
+            raise ValidationError({
+                'field_name': 'Error message'
+            })
+        
+        serializer.save(
+            business=self.request.user.business,
+            created_by=self.request.user
+        )
+    
+    def retrieve(self, request, pk=None):
+        try:
+            instance = self.get_object()
+        except {Module}.DoesNotExist:
+            raise NotFound('Item not found')
+        
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+```
+
+## Security Best Practices
+
+### Permissions
+```python
+from rest_framework.permissions import BasePermission
+
+class IsBusinessOwner(BasePermission):
+    """Only allow access to items owned by user's business"""
+    
+    def has_object_permission(self, request, view, obj):
+        return obj.business == request.user.business
+```
+
+### Rate Limiting
+```python
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour',
+        'burst': '60/min',
+    }
+}
+
+# In ViewSet
+from rest_framework.throttling import UserRateThrottle
+
+class {Module}ViewSet(viewsets.ModelViewSet):
+    throttle_classes = [UserRateThrottle]
+```
+
+## Testing
+
+### API Test
+```python
+from rest_framework.test import APITestCase
+from apps.business.models import Business
+from apps.{app}.models import {Module}
+
+class {Module}APITest(APITestCase):
+    def setUp(self):
+        self.business = Business.objects.create(name='Test Business')
+        self.user = User.objects.create_user(
+            email='test@example.com',
+            password='password123',
+            business=self.business
+        )
+        self.client.force_authenticate(user=self.user)
+    
+    def test_list_{module}s(self):
+        response = self.client.get('/api/{module}s/')
+        self.assertEqual(response.status_code, 200)
+    
+    def test_create_{module}(self):
+        data = {'name': 'Test {Module}'}
+        response = self.client.post('/api/{module}s/', data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['name'], 'Test {Module}')
+```
+
+## Quick Reference
+
+**Model**: Multi-tenant, audit fields, indexes  
+**Serializer**: Full + List versions, validation  
+**ViewSet**: Filter by business, optimize queries  
+**URLs**: Trailing slashes, use routers  
+**Queries**: select_related, prefetch_related, exists()  
+**Security**: Multi-tenancy, permissions, rate limiting  
+
+---
+
+**Reference**: `docs/architecture/BACKEND-ARCHITECTURE.md`

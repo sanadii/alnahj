@@ -1,0 +1,188 @@
+---
+alwaysApply: false
+---
+# Testing & Security Standards
+
+**Usage**: Apply with `@testing-security.mdc` when writing tests, performing security reviews, or implementing security features.
+
+## Core Principles
+Ensure code quality, security, and reliability across the platform
+
+## Responsibilities
+1. Write and maintain tests
+2. Implement security best practices
+3. Perform security audits
+4. Handle authentication and authorization
+5. Monitor and fix vulnerabilities
+6. **Create handover documentation when requested**
+7. **Always consult and update documentation**
+
+---
+
+## Documentation First
+
+### Always Consult Before Implementing
+
+**Essential Guides**: `docs/guides/`
+
+**Testing Guides** (`docs/guides/testing/`):
+- `testing-framework.md` ⭐ - Setup and configuration
+- `testing-plan.md` - Overall testing strategy
+- `test-data-strategy.md` - Managing test data
+- `security-testing-plan.md` - Security testing patterns
+
+**Quality Checklists** (`docs/guides/checklists/`):
+- `pre-commit.md` ⭐ - CRITICAL: Before every commit
+
+**Module Documentation**:
+- `docs/apps/{app}/{module}/FULLSTACK.md` - Implementation details
+- `docs/apps/{app}/{module}/API.md` - API contracts for testing
+- `docs/apps/{app}/{module}/TODO.md` - Testing status and tasks
+
+---
+
+## Testing Stack
+- **Frontend**: Jest, React Testing Library
+- **Backend**: Django TestCase, pytest
+- **E2E**: Cypress (planned)
+
+## Testing Patterns
+
+### Frontend Unit Test
+```typescript
+import { render, screen } from '@testing-library/react';
+import ClientList from './ClientList';
+
+describe('ClientList', () => {
+  it('renders client list', () => {
+    render(<Provider store={store}><ClientList /></Provider>);
+    expect(screen.getByText('Clients')).toBeInTheDocument();
+  });
+});
+```
+
+### Backend API Test
+```python
+from rest_framework.test import APITestCase
+
+class ClientAPITest(APITestCase):
+    def test_get_clients(self):
+        response = self.client.get('/api/clients/')
+        self.assertEqual(response.status_code, 200)
+```
+
+## Security Best Practices
+
+### Authentication
+- Use JWT tokens
+- Store tokens securely
+- Implement token refresh
+- Add CSRF protection
+
+### Authorization
+```python
+from rest_framework.permissions import BasePermission
+
+class IsBusinessOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.business == request.user.business
+```
+
+### Input Validation
+- Validate all user inputs
+- Sanitize HTML/SQL
+- Use Django ORM
+- Validate file uploads
+
+### API Security
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '100/hour',
+        'user': '1000/hour'
+    }
+}
+```
+
+## Security Checklist
+
+### Frontend
+- No hardcoded credentials
+- Sanitize user inputs
+- Validate all forms
+- Use HTTPS in production
+
+### Backend
+- Use environment variables
+- Enable security middleware
+- Implement rate limiting
+- Log security events
+
+### Database
+- Use parameterized queries
+- Limit permissions
+- Encrypt sensitive data
+- Regular backups
+
+## Testing Strategy
+- **Unit Tests**: 70% (functions, models, serializers)
+- **Integration Tests**: 20% (API, database, Redux)
+- **E2E Tests**: 10% (critical user flows)
+
+## Reference
+- **JWT Auth**: Check `apps/account/`
+- **Permissions**: Check client/contact models
+
+---
+
+## Always Provide Next Steps
+
+**At the end of every task completion or handover, provide recommended next steps:**
+
+### Template
+```markdown
+## 🎯 Recommended Next Steps
+
+### Testing Tasks
+- [ ] [Unit tests to write with file path]
+- [ ] [Integration tests needed]
+- [ ] [E2E tests for critical flows]
+- [ ] Run test suite: `npm test` (frontend) or `py manage.py test` (backend)
+
+### Security Review
+- [ ] [Authentication checks needed]
+- [ ] [Authorization/permissions to verify]
+- [ ] [Input validation to add]
+- [ ] [Security vulnerabilities to fix]
+- [ ] [CSRF/XSS protection to implement]
+
+### Code Quality
+- [ ] Test coverage analysis
+- [ ] Security audit checklist review
+- [ ] Performance testing if needed
+- [ ] Load testing for critical endpoints
+
+### Integration Points
+- [ ] [Backend security to review - tag @backend-engineer.mdc]
+- [ ] [Frontend security to review - tag @frontend-engineer.mdc]
+
+### Documentation
+- [ ] Update FULLSTACK.md testing section
+- [ ] Update TODO.md with test coverage status
+- [ ] Document security patterns used
+- [ ] Add test examples to guides
+```
+
+**Rules**:
+1. ✅ Include at end of every handover or major task
+2. ✅ Be specific with file paths and test cases
+3. ✅ Include commands to run tests
+4. ✅ Prioritize security-critical items first
+5. ✅ Tag other agents if security issues found
+6. ✅ Always include test coverage metrics

@@ -1,0 +1,13 @@
+/**
+ * Strategic Command Center - Action Types
+ */
+
+export const GET_STRATEGIC_DATA_REQUEST = 'strategic/GET_DATA_REQUEST';
+export const GET_STRATEGIC_DATA_SUCCESS = 'strategic/GET_DATA_SUCCESS';
+export const GET_STRATEGIC_DATA_FAILURE = 'strategic/GET_DATA_FAILURE';
+
+export const SET_STRATEGIC_FILTERS = 'strategic/SET_FILTERS';
+
+export const CREATE_STRATEGIC_SNAPSHOT_REQUEST = 'strategic/CREATE_SNAPSHOT_REQUEST';
+export const CREATE_STRATEGIC_SNAPSHOT_SUCCESS = 'strategic/CREATE_SNAPSHOT_SUCCESS';
+export const CREATE_STRATEGIC_SNAPSHOT_FAILURE = 'strategic/CREATE_SNAPSHOT_FAILURE';

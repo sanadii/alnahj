@@ -1,0 +1,22 @@
+{
+  "extends": ["./eslint.config.mjs"],
+  "rules": {
+    "no-console": [
+      "error",
+      {
+        "allow": []
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/Booking/Calendar/**/*.{ts,tsx,js,jsx}"],
+      "rules": {
+        "no-console": "off"
+      }
+    }
+  ]
+}
+
+
+

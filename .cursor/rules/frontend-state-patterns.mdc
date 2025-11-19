@@ -1,0 +1,563 @@
+---
+alwaysApply: false
+---
+# Frontend State Management Patterns
+
+**Universal state management patterns - Adapt to your library (Redux, Zustand, MobX, Context API, Pinia, etc.)**
+
+## State Management Principles
+
+### When to Use Global State
+✅ **Use global state for**:
+- User authentication/session
+- Application-wide settings
+- Shared data across multiple components
+- Data that needs to persist across routes
+- Complex data transformations
+
+❌ **Don't use global state for**:
+- Component-specific UI state (open/closed, etc.)
+- Form state (use form libraries)
+- Derived data (compute on-the-fly)
+- Temporary state
+
+### State Organization
+```typescript
+// Organize by feature/domain
+state/
+├── auth/          # Authentication
+├── users/         # User management
+├── products/      # Product catalog
+├── cart/          # Shopping cart
+└── ui/            # UI state (theme, sidebar, etc.)
+```
+
+## State Structure Pattern
+
+### Feature State Template
+```typescript
+interface FeatureState {
+  // Data
+  items: Item[];              // List of items
+  item: Item | null;          // Single item (for detail view)
+  
+  // UI state
+  loading: boolean;           // Loading indicator
+  error: string | null;       // Error message
+  
+  // Metadata
+  totalCount: number;         // Total items (for pagination)
+  filters: FilterState;       // Current filters
+  lastFetch: number | null;   // Cache timestamp
+}
+```
+
+## Actions/Events Pattern
+
+### Action Types
+```typescript
+// Request-Success-Error pattern
+'FETCH_ITEMS_REQUEST'
+'FETCH_ITEMS_SUCCESS'
+'FETCH_ITEMS_ERROR'
+
+'CREATE_ITEM_REQUEST'
+'CREATE_ITEM_SUCCESS'
+'CREATE_ITEM_ERROR'
+
+'UPDATE_ITEM_REQUEST'
+'UPDATE_ITEM_SUCCESS'
+'UPDATE_ITEM_ERROR'
+
+'DELETE_ITEM_REQUEST'
+'DELETE_ITEM_SUCCESS'
+'DELETE_ITEM_ERROR'
+
+// UI actions
+'SET_FILTER'
+'CLEAR_ERROR'
+'RESET_STATE'
+```
+
+### Action Creators
+```typescript
+// Action creator pattern
+function fetchItemsRequest(filters?: FilterParams) {
+  return {
+    type: 'FETCH_ITEMS_REQUEST',
+    payload: { filters }
+  };
+}
+
+function fetchItemsSuccess(items: Item[]) {
+  return {
+    type: 'FETCH_ITEMS_SUCCESS',
+    payload: items
+  };
+}
+
+function fetchItemsError(error: string) {
+  return {
+    type: 'FETCH_ITEMS_ERROR',
+    payload: error
+  };
+}
+```
+
+## API Integration Pattern
+
+### API Layer Separation
+```typescript
+// api/items.ts - Separate API logic from state logic
+import { APIClient } from './client';
+import { APIResponse } from '../types';
+
+export const ItemsAPI = {
+  // List all items
+  getAll: async (filters?: FilterParams): Promise<APIResponse<Item[]>> => {
+    return APIClient.get('/api/items/', { params: filters });
+  },
+  
+  // Get single item
+  getById: async (id: number): Promise<APIResponse<Item>> => {
+    return APIClient.get(`/api/items/${id}/`);
+  },
+  
+  // Create item
+  create: async (data: CreateItemData): Promise<APIResponse<Item>> => {
+    return APIClient.post('/api/items/', data);
+  },
+  
+  // Update item (partial)
+  update: async (id: number, data: Partial<CreateItemData>): Promise<APIResponse<Item>> => {
+    return APIClient.patch(`/api/items/${id}/`, data);
+  },
+  
+  // Delete item
+  delete: async (id: number): Promise<APIResponse<void>> => {
+    return APIClient.delete(`/api/items/${id}/`);
+  }
+};
+```
+
+### API Response Type
+```typescript
+// Standardized API response format
+interface APIResponse<T> {
+  data: T;
+  message?: string;
+  meta?: {
+    pagination?: PaginationMeta;
+    [key: string]: any;
+  };
+}
+
+interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+```
+
+## Async Operations Pattern
+
+### Side Effects Handling
+```typescript
+// Pseudocode for handling async operations
+async function fetchItems(filters) {
+  // 1. Dispatch request action (set loading=true)
+  dispatch({ type: 'FETCH_ITEMS_REQUEST' });
+  
+  try {
+    // 2. Call API
+    const response = await ItemsAPI.getAll(filters);
+    
+    // 3. Dispatch success action
+    dispatch({
+      type: 'FETCH_ITEMS_SUCCESS',
+      payload: response.data
+    });
+    
+    // 4. Show success message (if provided)
+    if (response.message) {
+      showToast('success', response.message);
+    }
+  } catch (error) {
+    // 5. Dispatch error action
+    const message = error.response?.data?.message || error.message || 'Failed to fetch items';
+    dispatch({
+      type: 'FETCH_ITEMS_ERROR',
+      payload: message
+    });
+    
+    // 6. Show error message
+    showToast('error', message);
+  }
+}
+```
+
+## State Updates Pattern
+
+### Immutable Updates
+```typescript
+// ❌ BAD: Mutating state
+state.items.push(newItem);
+state.loading = false;
+
+// ✅ GOOD: Immutable updates
+return {
+  ...state,
+  items: [...state.items, newItem],
+  loading: false
+};
+```
+
+### Common Update Patterns
+```typescript
+// Add item to list
+{
+  ...state,
+  items: [newItem, ...state.items],
+  totalCount: state.totalCount + 1
+}
+
+// Update item in list
+{
+  ...state,
+  items: state.items.map(item =>
+    item.id === updatedItem.id ? updatedItem : item
+  )
+}
+
+// Remove item from list
+{
+  ...state,
+  items: state.items.filter(item => item.id !== deletedId),
+  totalCount: state.totalCount - 1
+}
+
+// Replace entire list
+{
+  ...state,
+  items: newItems,
+  totalCount: newItems.length
+}
+```
+
+## Loading & Error States
+
+### Loading States
+```typescript
+interface LoadingState {
+  // Simple boolean
+  loading: boolean;
+  
+  // Or more granular
+  loadingStates: {
+    fetching: boolean;
+    creating: boolean;
+    updating: boolean;
+    deleting: boolean;
+  };
+}
+```
+
+### Error Handling
+```typescript
+interface ErrorState {
+  // Simple string
+  error: string | null;
+  
+  // Or more detailed
+  error: {
+    message: string;
+    code?: string;
+    field?: string;  // For validation errors
+  } | null;
+}
+
+// Clear error after timeout
+setTimeout(() => {
+  dispatch({ type: 'CLEAR_ERROR' });
+}, 5000);
+```
+
+## Selectors/Getters Pattern
+
+### Derived State
+```typescript
+// Don't store derived data - compute it
+interface State {
+  items: Item[];
+  // ❌ Don't store: activeItems, inactiveItems
+}
+
+// ✅ Compute derived data with selectors
+function selectActiveItems(state: State): Item[] {
+  return state.items.filter(item => item.status === 'active');
+}
+
+function selectItemById(state: State, id: number): Item | undefined {
+  return state.items.find(item => item.id === id);
+}
+
+// Memoize expensive computations
+const selectSortedItems = memoize((state: State): Item[] => {
+  return [...state.items].sort((a, b) => 
+    a.name.localeCompare(b.name)
+  );
+});
+```
+
+## Component Integration Pattern
+
+### Accessing State
+```typescript
+// In component
+function ItemList() {
+  // Get state
+  const items = useSelector(state => state.items.items);
+  const loading = useSelector(state => state.items.loading);
+  const error = useSelector(state => state.items.error);
+  
+  // Get actions
+  const dispatch = useDispatch();
+  
+  // Fetch on mount
+  useEffect(() => {
+    dispatch(fetchItemsRequest());
+  }, [dispatch]);
+  
+  // Handle loading
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+  
+  // Handle error
+  if (error) {
+    return <ErrorMessage message={error} />;
+  }
+  
+  // Render data
+  return (
+    <div>
+      {items.map(item => (
+        <ItemCard key={item.id} item={item} />
+      ))}
+    </div>
+  );
+}
+```
+
+### Dispatching Actions
+```typescript
+function ItemForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
+  const handleSubmit = async (data: FormData) => {
+    // Dispatch action
+    dispatch(createItemRequest(data));
+    
+    // Navigate after success (if using middleware)
+    // Or handle in component
+    navigate('/items');
+  };
+  
+  return <form onSubmit={handleSubmit}>...</form>;
+}
+```
+
+## Caching & Optimization
+
+### Cache Strategy
+```typescript
+interface CachedState {
+  data: Item[];
+  lastFetch: number | null;
+  cacheTimeout: number;  // milliseconds
+}
+
+function shouldRefetch(state: CachedState): boolean {
+  if (!state.lastFetch) return true;
+  
+  const now = Date.now();
+  const age = now - state.lastFetch;
+  
+  return age > state.cacheTimeout;
+}
+
+// In fetch logic
+if (!shouldRefetch(state.items)) {
+  // Use cached data
+  return;
+}
+
+// Fetch fresh data
+dispatch(fetchItemsRequest());
+```
+
+### Optimistic Updates
+```typescript
+// Optimistic update (update UI before API confirms)
+function optimisticUpdate(itemId: number, newData: Partial<Item>) {
+  // 1. Update UI immediately
+  dispatch({
+    type: 'UPDATE_ITEM_OPTIMISTIC',
+    payload: { id: itemId, data: newData }
+  });
+  
+  // 2. Call API
+  try {
+    const result = await ItemsAPI.update(itemId, newData);
+    
+    // 3. Confirm with actual data
+    dispatch({
+      type: 'UPDATE_ITEM_SUCCESS',
+      payload: result.data
+    });
+  } catch (error) {
+    // 4. Revert on error
+    dispatch({
+      type: 'UPDATE_ITEM_ERROR',
+      payload: { id: itemId, error }
+    });
+  }
+}
+```
+
+## State Persistence
+
+### Local Storage
+```typescript
+// Save state to localStorage
+function saveState(key: string, state: any) {
+  try {
+    const serialized = JSON.stringify(state);
+    localStorage.setItem(key, serialized);
+  } catch (error) {
+    console.error('Failed to save state:', error);
+  }
+}
+
+// Load state from localStorage
+function loadState(key: string): any {
+  try {
+    const serialized = localStorage.getItem(key);
+    if (serialized === null) return undefined;
+    return JSON.parse(serialized);
+  } catch (error) {
+    console.error('Failed to load state:', error);
+    return undefined;
+  }
+}
+
+// In store initialization
+const persistedState = loadState('appState');
+const store = createStore(reducer, persistedState);
+
+store.subscribe(() => {
+  saveState('appState', store.getState());
+});
+```
+
+## TypeScript Types
+
+### State Types
+```typescript
+// Feature state type
+export interface ItemsState {
+  items: Item[];
+  item: Item | null;
+  loading: boolean;
+  error: string | null;
+  totalCount: number;
+  filters: ItemFilters;
+}
+
+// Action types
+export type ItemsAction =
+  | { type: 'FETCH_ITEMS_REQUEST'; payload?: FilterParams }
+  | { type: 'FETCH_ITEMS_SUCCESS'; payload: Item[] }
+  | { type: 'FETCH_ITEMS_ERROR'; payload: string }
+  | { type: 'CREATE_ITEM_SUCCESS'; payload: Item }
+  | { type: 'UPDATE_ITEM_SUCCESS'; payload: Item }
+  | { type: 'DELETE_ITEM_SUCCESS'; payload: number };
+
+// Root state type
+export interface RootState {
+  auth: AuthState;
+  items: ItemsState;
+  users: UsersState;
+  // ... other features
+}
+```
+
+## Testing State Management
+
+### Test State Updates
+```typescript
+test('should add item to state on CREATE_ITEM_SUCCESS', () => {
+  const initialState: ItemsState = {
+    items: [],
+    loading: false,
+    error: null,
+    totalCount: 0
+  };
+  
+  const newItem: Item = { id: 1, name: 'Test Item' };
+  
+  const action = {
+    type: 'CREATE_ITEM_SUCCESS',
+    payload: newItem
+  };
+  
+  const newState = reducer(initialState, action);
+  
+  expect(newState.items).toHaveLength(1);
+  expect(newState.items[0]).toEqual(newItem);
+  expect(newState.totalCount).toBe(1);
+});
+```
+
+## Best Practices Summary
+
+### State Management
+- ✅ Keep state normalized (avoid deep nesting)
+- ✅ Separate UI state from data state
+- ✅ Use immutable updates
+- ✅ Avoid storing derived data
+- ✅ Single source of truth
+
+### API Integration
+- ✅ Separate API layer from state layer
+- ✅ Consistent response format
+- ✅ Proper error handling
+- ✅ Loading states for all async operations
+- ✅ Show user-friendly messages
+
+### Performance
+- ✅ Memoize selectors
+- ✅ Cache API responses
+- ✅ Batch updates when possible
+- ✅ Lazy load data when needed
+- ✅ Optimize re-renders
+
+### TypeScript
+- ✅ Type all state
+- ✅ Type all actions
+- ✅ Type API responses
+- ✅ Use strict mode
+
+---
+
+**Remember**: 
+- 🎯 Keep state minimal and normalized
+- ⚡ Optimize performance with caching
+- 🔒 Type everything with TypeScript
+- 🐛 Handle all error cases
+- 📊 Track loading states
+- 💬 Show user feedback
+
+**Adapt these patterns to your specific state management library!**

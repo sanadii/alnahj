@@ -1,0 +1,8 @@
+from django.apps import AppConfig
+
+
+class AttendeesConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'apps.attendees'
+    verbose_name = 'Attendees Management'
+

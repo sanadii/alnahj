@@ -1,0 +1,445 @@
+---
+alwaysApply: false
+---
+# Frontend Component Patterns - React & Material-UI
+
+**Usage**: Apply with `@frontend-patterns.mdc` when working on React components, Material-UI, forms, or routing.
+
+**NOTE**: This rule focuses on component patterns. For Redux/API integration, see `@frontend-redux-patterns.mdc`.
+
+## Critical Frontend Rules
+
+### 🚨 Zero Linting Errors (MANDATORY)
+```bash
+# Must pass with 0 errors, 0 warnings
+npm run lint
+
+# Auto-fix what's possible
+npm run lint -- --fix
+```
+
+### 🚨 Remove ALL Unused Code
+- ❌ No unused imports
+- ❌ No unused variables
+- ❌ No console.log statements
+- ❌ No commented-out code
+- ❌ No TODO comments (add to TODO.md instead)
+
+### 🚨 TypeScript Strict Mode
+- ✅ All types defined
+- ✅ No `any` types (use proper interfaces)
+- ✅ Proper null checking
+- ✅ Generic types where appropriate
+
+## Development Order (CRITICAL)
+
+**Always follow this sequence**:
+
+1. **Types First** → `types/{module}.ts` (See: `@frontend-redux-patterns.mdc`)
+2. **API Helper** → `helpers/api/{module}.ts` ⭐ **STANDARDIZED** (See: `@frontend-redux-patterns.mdc`)
+3. **Redux Store** → `store/{module}/` (See: `@frontend-redux-patterns.mdc`)
+4. **Components** → `views/application/{module}/` (This file)
+5. **Routes** → `routes/MainRoutes.tsx`
+6. **Menu** → `menu-items/application.ts`
+
+**CRITICAL**: API helpers MUST be in `helpers/api/` directory!
+
+## Using Redux in Components ⭐ **UPDATED**
+
+**Note**: For complete Redux patterns, see `@frontend-redux-patterns.mdc`
+
+```typescript
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'store';
+import { get{Module}sRequest, delete{Module}Request } from 'store/{module}/actions';
+
+const Component = () => {
+  const dispatch = useDispatch();
+  
+  // ✅ Select state from Redux store
+  const { items, loading, error } = useSelector((state: RootState) => state.{module});
+  
+  useEffect(() => {
+    // ✅ Dispatch action to fetch data
+    dispatch(get{Module}sRequest({}));
+  }, [dispatch]);
+  
+  // ✅ Handle loading state
+  if (loading) return <CircularProgress />;
+  
+  // ✅ Handle error state
+  if (error) return <Alert severity="error">{error}</Alert>;
+  
+  // ✅ Render data
+  return (/* JSX */);
+};
+```
+
+**Key Points**:
+- ✅ Always handle loading and error states
+- ✅ Use `useSelector` for state access
+- ✅ Use `useDispatch` for actions
+- ✅ API calls happen in Redux saga (NOT in components)
+
+## Component Pattern
+
+### List Component
+```typescript
+// views/application/{app}/{module}/{Module}List.tsx
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+  Chip
+} from '@mui/material';
+import { IconEdit, IconTrash, IconPlus, IconEye } from '@tabler/icons-react';
+import MainCard from 'ui-component/cards/MainCard';
+import { RootState } from 'store';
+import { get{Module}sRequest, delete{Module}Request } from 'store/{module}/actions';
+
+const {Module}List: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const { items, loading, error } = useSelector((state: RootState) => state.{module});
+  
+  useEffect(() => {
+    dispatch(get{Module}sRequest({}));
+  }, [dispatch]);
+  
+  const handleDelete = (id: number) => {
+    if (window.confirm('Are you sure you want to delete this {module}?')) {
+      dispatch(delete{Module}Request(id));
+    }
+  };
+  
+  if (loading) {
+    return (
+      <MainCard>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+          <Typography>Loading...</Typography>
+        </Box>
+      </MainCard>
+    );
+  }
+  
+  if (error) {
+    return (
+      <MainCard>
+        <Typography color="error">{error}</Typography>
+      </MainCard>
+    );
+  }
+  
+  return (
+    <MainCard
+      title={
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h3">{Module}s ({items.length})</Typography>
+          <Button
+            variant="contained"
+            startIcon={<IconPlus />}
+            onClick={() => navigate('create')}
+          >
+            Add {Module}
+          </Button>
+        </Box>
+      }
+    >
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Created</TableCell>
+              <TableCell align="right">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {items.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  <Typography color="textSecondary">No {module}s found</Typography>
+                </TableCell>
+              </TableRow>
+            ) : (
+              items.map((item) => (
+                <TableRow key={item.id} hover>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={item.status_display}
+                      color={item.is_active ? 'success' : 'default'}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {new Date(item.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      size="small"
+                      onClick={() => navigate(`${item.id}`)}
+                      title="View Details"
+                    >
+                      <IconEye size={18} />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => navigate(`${item.id}/edit`)}
+                      title="Edit"
+                    >
+                      <IconEdit size={18} />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(item.id)}
+                      title="Delete"
+                    >
+                      <IconTrash size={18} />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </MainCard>
+  );
+};
+
+export default {Module}List;
+```
+
+### Form Component (Formik + Yup)
+```typescript
+// views/application/{app}/{module}/{Module}Form.tsx
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import {
+  Box,
+  Button,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
+import MainCard from 'ui-component/cards/MainCard';
+import { create{Module}Request, update{Module}Request } from 'store/{module}/actions';
+import { {Module}, {Module}FormData } from 'types/{module}';
+
+interface Props {
+  {module}?: {Module};
+  mode: 'create' | 'edit';
+}
+
+const validationSchema = Yup.object({
+  name: Yup.string()
+    .required('Name is required')
+    .min(3, 'Name must be at least 3 characters'),
+  description: Yup.string(),
+  status: Yup.string().oneOf(['active', 'inactive'])
+});
+
+const {Module}Form: React.FC<Props> = ({ {module}, mode }) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const initialValues: {Module}FormData = {
+    name: {module}?.name || '',
+    description: {module}?.description || '',
+    status: {module}?.status || 'active'
+  };
+  
+  const handleSubmit = (values: {Module}FormData) => {
+    if (mode === 'create') {
+      dispatch(create{Module}Request(values));
+    } else if ({module}) {
+      dispatch(update{Module}Request({module}.id, values));
+    }
+    navigate(-1);
+  };
+  
+  return (
+    <MainCard title={mode === 'create' ? 'Create {Module}' : 'Edit {Module}'}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, errors, touched, handleChange, handleBlur }) => (
+          <Form>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <TextField
+                name="name"
+                label="Name"
+                value={values.name}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.name && Boolean(errors.name)}
+                helperText={touched.name && errors.name}
+                required
+                fullWidth
+              />
+              
+              <TextField
+                name="description"
+                label="Description"
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={touched.description && Boolean(errors.description)}
+                helperText={touched.description && errors.description}
+                multiline
+                rows={4}
+                fullWidth
+              />
+              
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  name="status"
+                  value={values.status}
+                  onChange={handleChange}
+                  label="Status"
+                >
+                  <MenuItem value="active">Active</MenuItem>
+                  <MenuItem value="inactive">Inactive</MenuItem>
+                </Select>
+              </FormControl>
+              
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                <Button onClick={() => navigate(-1)}>Cancel</Button>
+                <Button type="submit" variant="contained">
+                  {mode === 'create' ? 'Create' : 'Update'}
+                </Button>
+              </Box>
+            </Box>
+          </Form>
+        )}
+      </Formik>
+    </MainCard>
+  );
+};
+
+export default {Module}Form;
+```
+
+## Routes & Navigation
+
+### Add Routes
+```typescript
+// routes/MainRoutes.tsx
+import {Module}List from 'views/application/{app}/{module}';
+import {Module}Form from 'views/application/{app}/{module}/{Module}Form';
+
+const MainRoutes = {
+  path: '/',
+  element: <MainLayout />,
+  children: [
+    {
+      path: '{module}s',
+      children: [
+        { path: '', element: <{Module}List /> },
+        { path: 'create', element: <{Module}Form mode="create" /> },
+        { path: ':id/edit', element: <{Module}Form mode="edit" /> }
+      ]
+    }
+  ]
+};
+```
+
+### Add Menu Item
+```typescript
+// menu-items/application.ts
+import { IconPackage } from '@tabler/icons-react';
+
+const {module}Item = {
+  id: '{module}s',
+  title: '{Module}s',
+  type: 'item',
+  url: '/{module}s',
+  icon: IconPackage,
+  breadcrumbs: false
+};
+
+// Add to application menu children array
+```
+
+## Material-UI Best Practices
+
+### Use Theme
+```typescript
+import { useTheme } from '@mui/material/styles';
+
+const Component = () => {
+  const theme = useTheme();
+  
+  return (
+    <Box sx={{ color: theme.palette.primary.main }}>
+      Content
+    </Box>
+  );
+};
+```
+
+### Responsive Design
+```typescript
+<Box
+  sx={{
+    display: { xs: 'block', md: 'flex' },
+    gap: 2,
+    p: { xs: 1, sm: 2, md: 3 }
+  }}
+>
+  Content
+</Box>
+```
+
+### Shared Components
+```typescript
+// Use from ui-component/
+import MainCard from 'ui-component/cards/MainCard';
+import SubCard from 'ui-component/cards/SubCard';
+import AnimateButton from 'ui-component/extended/AnimateButton';
+```
+
+## Quick Reference ⭐ **UPDATED**
+
+**Order**: Types → API → Redux → Components → Routes → Menu  
+**Linting**: `npm run lint` (must be 0 errors)  
+**Updates**: PATCH for partial, PUT for full  
+**State**: Redux Saga for async, proper loading/error states  
+**UI**: Material-UI theme, shared components, responsive  
+
+**API Standardization**:
+- ✅ API helpers in `helpers/api/` (NOT `api/` or `backend_helper`)
+- ✅ All responses: `{data, message, meta}` format
+- ✅ Show `message` to users via toast
+- ✅ Handle loading/error states in components
+
+---
+
+**References**:
+- `docs/architecture/FRONTEND-ARCHITECTURE.md` - Overall architecture
+- `docs/architecture/frontend/FRONTEND-INTEGRATION-QUICK-REFERENCE.md` - API patterns
+- `@frontend-redux-patterns.mdc` - Redux/API integration patterns
+
+**Standardization Status**: 71% Complete (20/28 modules compliant)

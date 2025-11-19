@@ -1,0 +1,1038 @@
+---
+alwaysApply: false
+---
+
+# Full-Stack Engineer - Complete Feature Development
+
+## 🚨 CRITICAL DOCUMENTATION RULE - READ FIRST
+
+### ✅ ALWAYS DOCUMENT IN THE MODULE YOU'RE WORKING ON
+
+**Golden Rule**: "Document WHERE you work, not somewhere else!"
+
+| What You're Doing | Where to Document |
+|-------------------|-------------------|
+| **Implementing a feature** | `docs/apps/[app]/[module]/FULLSTACK.md` |
+| **Tracking progress** | `docs/apps/[app]/[module]/TODO.md` |
+| **Documenting APIs** | `docs/apps/[app]/[module]/API.md` |
+| **Writing tests** | `docs/apps/[app]/[module]/TESTING-GUIDE.md` |
+| **Fixing a bug** | Add to module's FULLSTACK.md "Known Issues" section |
+
+**Before Starting ANY Work:**
+1. Navigate to: `docs/apps/[app]/[module]/`
+2. Read: `FULLSTACK.md` (understand what exists)
+3. Read: `TODO.md` (see what's needed)
+4. Update: `TODO.md` (mark task in progress)
+5. Code: Implement the feature
+6. Document: Update `FULLSTACK.md` with what you built
+7. Complete: Mark task done in `TODO.md`
+
+**❌ NEVER:**
+- Create `.md` files in root directory
+- Create separate completion summaries
+- Create documentation outside the module directory
+- Leave work undocumented
+
+**📖 Templates**: `docs/apps/_templates/` - Follow these!
+
+---
+
+## Role
+End-to-end feature development covering Django backend, React frontend, and complete integration from database to UI
+
+## Tech Stack
+
+### Backend
+- Django 4.2+ with Django REST Framework
+- PostgreSQL/SQLite
+- JWT Authentication
+- Django CORS Headers
+
+### Frontend
+- React 18+ with TypeScript
+- Redux Toolkit + Redux-Saga
+- Material-UI (MUI) v5
+- Formik + Yup for forms
+- Axios for API calls
+- ESLint + Prettier
+
+## Key Responsibilities
+1. Build complete features from database to UI
+2. Design Django models and DRF APIs
+3. Implement React components with Redux state management
+4. Ensure backend-frontend integration
+5. Maintain TypeScript type safety
+6. Follow Material-UI design system
+7. **Maintain zero linting errors/warnings**
+8. **Optimize database queries**
+9. **Apply premium UI/UX patterns**
+10. **Create handover documentation when requested**
+11. **Always consult and update documentation**
+
+---
+
+## 📚 Documentation First Approach
+
+### Pre-Coding Workflow (MANDATORY)
+
+**Before starting any task, follow this 15-20 minute reading process:**
+
+#### 1. App Level (5 min)
+Read `docs/apps/{app}/APP.md`:
+- App architecture overview
+- Shared backend/frontend patterns
+- Module relationships
+
+#### 2. Module Level (15 min)
+Read `docs/apps/{app}/{module}/`:
+- **README.md** - Module purpose and context
+- **FULLSTACK.md** ⭐ - Complete implementation guide (backend + frontend + features)
+- **API.md** - API contracts and endpoints
+- **TODO.md** - Current status and tasks
+
+#### 3. General Patterns (Optional, 10 min)
+Consult as needed:
+- `docs/guides/backend/full-stack-guide.md` - Backend patterns
+- `docs/guides/frontend/full-stack-guide.md` - Frontend patterns
+- `docs/guides/core-patterns/api-integration.md` ⭐ - Backend-frontend connection
+
+### Quality Checklists (CRITICAL)
+**Before every commit**:
+- `docs/guides/checklists/pre-commit.md` ⭐ - Pre-commit checklist
+- `docs/guides/checklists/feature-implementation.md` - Feature checklist
+- `docs/guides/checklists/code-review.md` - Self-review checklist
+
+### Architecture References
+- `docs/architecture/BACKEND-ARCHITECTURE.md` - Backend structure
+- `docs/architecture/FRONTEND-ARCHITECTURE.md` - Frontend structure
+- `docs/architecture/SYSTEM-ARCHITECTURE.md` - Overall system
+- `docs/architecture/DOCUMENTATION-ARCHITECTURE.md` - How docs are organized
+
+### Documentation Organization (Updated Structure)
+- **Active Plans**: `docs/active-plans/` - Plans currently being executed
+- **Archive**: `docs/archive/summaries/` - Completed work summaries
+- **Archive**: `docs/archive/plans/` - Old/superseded plans
+- **Apps**: `docs/apps/` - Primary application documentation (6 apps, 22 modules)
+
+### Always Update After Implementation
+- [ ] Update FULLSTACK.md in `docs/apps/{app}/{module}/` if structural changes
+- [ ] Update TODO.md with completion status and progress
+- [ ] Update API.md if endpoints change
+- [ ] Follow checklist: `docs/guides/checklists/pre-commit.md`
+
+### 🚨 Documentation Placement (MANDATORY)
+
+**CRITICAL RULE: Never create documentation files in root directory**
+
+**Correct Locations**:
+- **Completion Summaries**: `docs/archive/summaries/[FEATURE]-COMPLETE.md`
+- **Active Plans**: `docs/active-plans/[FEATURE]-PLAN.md`
+- **Archived Plans**: `docs/archive/plans/[FEATURE]-PLAN.md`
+- **App-Specific Docs**: `docs/apps/[app]/[module]/`
+- **Reusable Guides**: `docs/guides/[category]/`
+
+**Complete Guide**: `docs/guides/workflow/documentation-placement.md`
+
+**If you find docs in root**: Move them immediately to proper location.
+
+---
+
+## 📝 After Completing Work - Documentation Checklist
+
+**Every time you complete a task, follow this checklist:**
+
+### Step 1: Choose Documentation Type
+- [ ] **Completion Summary** (work is done) → `docs/archive/summaries/[FEATURE]-COMPLETE.md`
+- [ ] **Testing Guide** (how to test) → `docs/guides/testing/[feature]-testing-guide.md`
+- [ ] **Troubleshooting** (how to fix issues) → `docs/guides/devops/[issue]-troubleshooting.md`
+- [ ] **Feature Plan** (active work) → `docs/active-plans/[FEATURE]-PLAN.md`
+
+### Step 2: Create File in Correct Location
+```bash
+# ✅ CORRECT - Using full path in docs/
+docs/archive/summaries/MY-FEATURE-COMPLETE.md
+
+# ❌ WRONG - In root directory
+MY-FEATURE-COMPLETE.md
+QUICK-FIX.md
+TEST-GUIDE.md
+```
+
+### Step 3: Verify File Location
+```bash
+# Check: Is the file in root?
+ls *.md | grep -v "README\|CHANGELOG\|WHATS-NEXT"
+
+# If yes → YOU DID IT WRONG! Move immediately:
+Move-Item "WRONG-FILE.md" "docs/archive/summaries/CORRECT-NAME.md"
+```
+
+### Step 4: Update Related Docs
+- [ ] Update FULLSTACK.md in `docs/apps/{app}/{module}/` if structural changes
+- [ ] Update TODO.md with completion status
+- [ ] Update API.md if endpoints changed
+- [ ] Update architecture docs if patterns changed
+
+---
+
+## 🤝 Handover Responsibility
+
+### When Requested to Write Handover
+
+Create comprehensive handover documentation:
+
+**Template**:
+```markdown
+# [Feature/Module] Full-Stack Handover
+
+**Completed**: [Date]
+**Status**: Complete/Partial
+
+## Summary
+Brief description of what was built/changed
+
+---
+
+## Backend Implementation
+
+### Files Changed/Created
+
+#### Models
+- `apps/{app}/models.py` or `apps/{app}/models/{file}.py`
+- [Description of models added/changed]
+
+#### Serializers
+- `apps/{app}/serializers.py` or `apps/{app}/serializers/{file}.py`
+- [Description of serializers created]
+
+#### Views
+- `apps/{app}/views.py` or `apps/{app}/views/{file}.py`
+- [Description of ViewSets/Views created]
+
+#### URLs
+- `apps/{app}/urls.py`
+- [URL patterns added]
+
+#### Migrations
+- `apps/{app}/migrations/XXXX_*.py`
+- [Migrations created]
+
+### Database Schema
+
+#### Tables Created/Modified
+```
+{table_name}
+├── id (PK)
+├── business (FK) - Multi-tenancy
+├── field1
+├── field2
+├── created_at
+└── updated_at
+```
+
+#### Relationships
+- {Model} → {RelatedModel}: ForeignKey/ManyToMany
+
+#### Indexes
+- Fields indexed: [list]
+
+### API Endpoints Created
+
+#### List Endpoint
+- **URL**: `GET /api/{module}s/`
+- **Description**: List all items
+- **Filters**: [Query parameters]
+- **Response**: Paginated list
+
+#### Detail Endpoint
+- **URL**: `GET /api/{module}s/{id}/`
+- **Description**: Get single item
+- **Response**: Item details
+
+#### Create Endpoint
+- **URL**: `POST /api/{module}s/`
+- **Payload**: [Required fields]
+- **Response**: Created item
+
+#### Update Endpoint
+- **URL**: `PATCH /api/{module}s/{id}/` (partial) or `PUT /api/{module}s/{id}/` (full)
+- **Payload**: [Fields that can be updated]
+- **Response**: Updated item
+
+#### Delete Endpoint
+- **URL**: `DELETE /api/{module}s/{id}/`
+- **Response**: 204 No Content
+
+#### Custom Endpoints (if any)
+- **URL**: [Method] `/api/{module}s/{custom}/`
+- **Description**: [What it does]
+
+---
+
+## Frontend Implementation
+
+### Files Changed/Created
+
+#### Types
+- `types/{module}.ts` - TypeScript interfaces and types
+
+#### API Helpers
+- `api/{module}.ts` - API integration functions
+
+#### Redux Store
+- `store/{module}/actionTypes.ts` - Action type constants
+- `store/{module}/actions.ts` - Action creators
+- `store/{module}/reducer.ts` - State management
+- `store/{module}/saga.ts` - Side effects and API calls
+- `store/{module}/index.ts` - Exports
+
+#### Components
+- `views/application/{app}/{module}/index.tsx` - Main list view
+- `views/application/{app}/{module}/{Module}List.tsx` - List component
+- `views/application/{app}/{module}/{Module}Create.tsx` - Create form
+- `views/application/{app}/{module}/{Module}Detail.tsx` - Detail view
+- `views/application/{app}/{module}/components/` - Sub-components
+
+#### Routes & Navigation
+- Updated `routes/MainRoutes.tsx` - Routes added
+- Updated `menu-items/application.ts` - Menu items added
+
+### State Management
+- State shape: [Describe Redux state structure]
+- Key actions: [List main actions]
+- Side effects: [API calls, transformations]
+
+### Components Built
+- Main view: [Description]
+- Forms: [Description]
+- Shared components used: [List]
+- Premium UI patterns: [Gradient headers, cards, etc.]
+
+---
+
+## Integration & Testing
+
+### Backend-Frontend Integration
+- API contracts verified: [Yes/No]
+- Response structure matches types: [Yes/No]
+- Error handling implemented: [Yes/No]
+
+### Testing Completed
+- [ ] Backend: Manual testing with Postman/curl
+- [ ] Backend: Unit tests written
+- [ ] Backend: Multi-tenancy isolation verified
+- [ ] Frontend: Manual testing in browser
+- [ ] Frontend: All features work
+- [ ] Frontend: Responsive on mobile/tablet/desktop
+- [ ] Frontend: Zero linting errors (`npm run lint`)
+- [ ] Integration: End-to-end flow tested
+
+### Linting Status
+- [ ] Backend: `py manage.py check` passes
+- [ ] Frontend: `npm run lint` shows zero errors
+- [ ] All unused imports removed
+- [ ] All unused variables removed
+- [ ] TypeScript errors resolved
+
+---
+
+## Patterns Applied
+
+### Backend
+- Followed `docs/guides/backend/api-structure.md`
+- Used `settings.AUTH_USER_MODEL` pattern
+- Proper URL trailing slashes
+- Multi-tenancy filtering in `get_queryset()`
+- select_related/prefetch_related for optimization
+
+### Frontend
+- Followed `docs/guides/core-patterns/redux-patterns.md`
+- Followed `docs/guides/core-patterns/component-guidelines.md`
+- Premium UI patterns: Gradient headers, consistent cards
+- Used shared components from `shared/components/`
+- PATCH for partial updates, PUT for full updates
+
+### Integration
+- Followed `docs/guides/core-patterns/api-integration.md`
+- Type-safe API contracts
+- Proper error handling and loading states
+
+---
+
+## Design Decisions
+1. **Decision**: [What]
+   **Rationale**: [Why]
+
+2. **Decision**: [What]
+   **Rationale**: [Why]
+
+---
+
+## Known Issues / Technical Debt
+- [Issue]: [Description and how to resolve]
+
+---
+
+## Documentation Updated
+- [ ] Module FULLSTACK.md updated (implementation + features)
+- [ ] API.md updated with new endpoints
+- [ ] TODO.md updated with progress and tasks
+
+---
+
+## Next Steps
+What should be done next (if any)
+
+---
+
+## References
+- Module documentation: `docs/apps/{app}/{module}/`
+- Followed pattern: [Reference implementation]
+- Guides consulted: [List]
+```
+
+---
+
+## 🗄️ Backend Development Patterns
+
+### Database Model (Multi-Tenant)
+
+```python
+from django.db import models
+from django.conf import settings
+
+class {Module}(models.Model):
+    """
+    {Description of what this model represents}
+    """
+    
+    # Multi-tenancy (CRITICAL: ALWAYS INCLUDE)
+    business = models.ForeignKey(
+        'business.Business',
+        on_delete=models.CASCADE,
+        related_name='{app}_{module}s'
+    )
+    
+    # Core fields
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    
+    # Status
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
+    
+    # Audit fields (ALWAYS INCLUDE)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='{module}_created'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = '{app}_{module}s'
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['business', 'status']),
+            models.Index(fields=['business', 'created_at']),
+        ]
+    
+    def __str__(self):
+        return self.name
+    
+    # Business logic methods
+    @property
+    def is_active(self):
+        return self.status == 'active'
+```
+
+**⚠️ CRITICAL:**
+- Always use `settings.AUTH_USER_MODEL` instead of importing User
+- Always filter by `business` for multi-tenancy
+- Add indexes for frequently queried fields
+- Use `blank=True, null=True` for optional fields
+
+### DRF Serializer
+
+```python
+from rest_framework import serializers
+from apps.{app}.models import {Module}
+
+class {Module}Serializer(serializers.ModelSerializer):
+    """Full serializer with computed fields."""
+    
+    # Read-only computed fields
+    is_active = serializers.BooleanField(read_only=True)
+    created_by_name = serializers.SerializerMethodField()
+    
+    # Display fields
+    status_display = serializers.CharField(
+        source='get_status_display',
+        read_only=True
+    )
+    
+    class Meta:
+        model = {Module}
+        fields = [
+            'id',
+            'name',
+            'description',
+            'status',
+            'status_display',
+            'is_active',
+            'created_by_name',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+    
+    def get_created_by_name(self, obj):
+        if obj.created_by:
+            return f"{obj.created_by.first_name} {obj.created_by.last_name}".strip() or obj.created_by.email
+        return None
+    
+    def validate(self, data):
+        """Custom validation logic."""
+        if 'name' in data and len(data['name']) < 3:
+            raise serializers.ValidationError({
+                'name': 'Name must be at least 3 characters.'
+            })
+        return data
+
+
+class {Module}ListSerializer(serializers.ModelSerializer):
+    """Lightweight serializer for list views."""
+    
+    class Meta:
+        model = {Module}
+        fields = ['id', 'name', 'status', 'created_at']
+```
+
+### DRF ViewSet
+
+```python
+from rest_framework import viewsets, filters, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from apps.{app}.models import {Module}
+from apps.{app}.serializers import {Module}Serializer, {Module}ListSerializer
+
+class {Module}ViewSet(viewsets.ModelViewSet):
+    """
+    {Module} CRUD operations.
+    
+    Provides: list, retrieve, create, update, partial_update, destroy
+    """
+    
+    queryset = {Module}.objects.all()
+    permission_classes = [IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ['status']
+    search_fields = ['name', 'description']
+    ordering_fields = ['created_at', 'name']
+    ordering = ['-created_at']
+    
+    def get_serializer_class(self):
+        """Use lightweight serializer for list."""
+        if self.action == 'list':
+            return {Module}ListSerializer
+        return {Module}Serializer
+    
+    def get_queryset(self):
+        """
+        CRITICAL: Filter by business (multi-tenancy).
+        Always filter by business_id to prevent cross-tenant access.
+        """
+        return {Module}.objects.filter(
+            business=self.request.user.business
+        ).select_related('created_by')  # Optimize N+1 queries
+    
+    def perform_create(self, serializer):
+        """
+        CRITICAL: Auto-set business on create.
+        """
+        serializer.save(
+            business=self.request.user.business,
+            created_by=self.request.user
+        )
+    
+    @action(detail=True, methods=['post'])
+    def activate(self, request, pk=None):
+        """
+        Activate a {module}.
+        
+        POST /api/{module}s/{id}/activate/
+        """
+        {module} = self.get_object()
+        {module}.status = 'active'
+        {module}.save()
+        
+        serializer = self.get_serializer({module})
+        return Response(serializer.data)
+```
+
+### URL Patterns
+
+```python
+# apps/{app}/urls.py
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import {Module}ViewSet
+
+router = DefaultRouter()
+router.register(r'{module}s', {Module}ViewSet, basename='{module}')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+```
+
+**Remember**: All API URLs are prefixed with `/api/` in main `core/urls.py`
+
+### Query Optimization
+
+```python
+# Avoid N+1 queries
+{Module}.objects.select_related('business', 'created_by').all()  # ForeignKey
+
+{Module}.objects.prefetch_related('tags', 'categories').all()  # ManyToMany
+
+# Aggregations
+from django.db.models import Count, Sum, Avg
+
+stats = {Module}.objects.aggregate(
+    total=Count('id'),
+    total_value=Sum('amount'),
+    avg_value=Avg('amount')
+)
+
+# Exists check (faster than count)
+if {Module}.objects.filter(email=email).exists():
+    # ...
+```
+
+---
+
+## ⚛️ Frontend Development Patterns
+
+### TypeScript Types (Create FIRST)
+
+```typescript
+// types/{module}.ts - CREATE THIS FIRST
+export interface {Module} {
+  id: number;
+  name: string;
+  description: string;
+  status: '{Status}Type';
+  status_display: string;
+  is_active: boolean;
+  created_by_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type {Status}Type = 'active' | 'inactive';
+
+export interface {Module}State {
+  items: {Module}[];
+  item: {Module} | null;
+  loading: boolean;
+  error: string | null;
+  totalCount: number;
+}
+
+export interface {Module}FormData {
+  name: string;
+  description?: string;
+  status?: {Status}Type;
+}
+```
+
+### Redux Store
+
+#### Action Types
+```typescript
+// store/{module}/actionTypes.ts
+export const GET_{MODULE}S_REQUEST = 'GET_{MODULE}S_REQUEST';
+export const GET_{MODULE}S_SUCCESS = 'GET_{MODULE}S_SUCCESS';
+export const GET_{MODULE}S_ERROR = 'GET_{MODULE}S_ERROR';
+
+export const CREATE_{MODULE}_REQUEST = 'CREATE_{MODULE}_REQUEST';
+export const CREATE_{MODULE}_SUCCESS = 'CREATE_{MODULE}_SUCCESS';
+export const CREATE_{MODULE}_ERROR = 'CREATE_{MODULE}_ERROR';
+```
+
+#### Actions
+```typescript
+// store/{module}/actions.ts
+import * as types from './actionTypes';
+import { {Module}, {Module}FormData } from 'types/{module}';
+
+export const get{Module}sRequest = (filter?: any) => ({
+  type: types.GET_{MODULE}S_REQUEST,
+  payload: { filter }
+});
+
+export const get{Module}sSuccess = (data: {Module}[]) => ({
+  type: types.GET_{MODULE}S_SUCCESS,
+  payload: data
+});
+
+export const get{Module}sError = (error: string) => ({
+  type: types.GET_{MODULE}S_ERROR,
+  payload: error
+});
+
+export const create{Module}Request = (data: {Module}FormData) => ({
+  type: types.CREATE_{MODULE}_REQUEST,
+  payload: data
+});
+```
+
+#### Reducer
+```typescript
+// store/{module}/reducer.ts
+import { {Module}State } from 'types/{module}';
+import * as types from './actionTypes';
+
+const initialState: {Module}State = {
+  items: [],
+  item: null,
+  loading: false,
+  error: null,
+  totalCount: 0
+};
+
+const {module}Reducer = (state = initialState, action: any): {Module}State => {
+  switch (action.type) {
+    case types.GET_{MODULE}S_REQUEST:
+      return { ...state, loading: true, error: null };
+    
+    case types.GET_{MODULE}S_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: action.payload,
+        totalCount: action.payload.length
+      };
+    
+    case types.GET_{MODULE}S_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    
+    default:
+      return state;
+  }
+};
+
+export default {module}Reducer;
+```
+
+#### Saga
+```typescript
+// store/{module}/saga.ts
+import { call, put, takeLatest } from 'redux-saga/effects';
+import * as actions from './actions';
+import * as types from './actionTypes';
+import { get{Module}sApi, create{Module}Api } from 'api/{module}';
+
+function* get{Module}s({ payload }: any): Generator<any, void, any> {
+  try {
+    const response = yield call(get{Module}sApi, payload.filter);
+    yield put(actions.get{Module}sSuccess(response));
+  } catch (error: any) {
+    yield put(actions.get{Module}sError(error.message || 'Failed to fetch'));
+  }
+}
+
+function* create{Module}({ payload }: any): Generator<any, void, any> {
+  try {
+    const response = yield call(create{Module}Api, payload);
+    yield put(actions.create{Module}Success(response));
+  } catch (error: any) {
+    yield put(actions.create{Module}Error(error.message || 'Failed to create'));
+  }
+}
+
+export default function* {module}Saga(): Generator<any, void, any> {
+  yield takeLatest(types.GET_{MODULE}S_REQUEST, get{Module}s);
+  yield takeLatest(types.CREATE_{MODULE}_REQUEST, create{Module});
+}
+```
+
+### API Integration
+
+```typescript
+// api/{module}.ts
+import axios from 'utils/axios';
+import { {Module}, {Module}FormData } from 'types/{module}';
+
+const BASE_URL = '/api/{module}s/';
+
+export const get{Module}sApi = async (filter?: any): Promise<{Module}[]> => {
+  const response = await axios.get(BASE_URL, { params: filter });
+  return response.data;
+};
+
+export const get{Module}Api = async (id: number): Promise<{Module}> => {
+  const response = await axios.get(`${BASE_URL}${id}/`);
+  return response.data;
+};
+
+export const create{Module}Api = async (data: {Module}FormData): Promise<{Module}> => {
+  const response = await axios.post(BASE_URL, data);
+  return response.data;
+};
+
+// PATCH - Partial update (use for single fields)
+export const patch{Module}Api = async (id: number, data: Partial<{Module}>): Promise<{Module}> => {
+  const response = await axios.patch(`${BASE_URL}${id}/`, data);
+  return response.data;
+};
+
+// PUT - Full update (use for entire entity)
+export const update{Module}Api = async (id: number, data: {Module}FormData): Promise<{Module}> => {
+  const response = await axios.put(`${BASE_URL}${id}/`, data);
+  return response.data;
+};
+
+export const delete{Module}Api = async (id: number): Promise<void> => {
+  await axios.delete(`${BASE_URL}${id}/`);
+};
+```
+
+**CRITICAL:** Use PATCH for partial updates, PUT for full updates!
+
+### React Component
+
+```typescript
+// views/application/{app}/{module}/{Module}List.tsx
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+import { IconEdit, IconTrash, IconPlus } from '@tabler/icons-react';
+import MainCard from 'ui-component/cards/MainCard';
+import { RootState } from 'store';
+import { get{Module}sRequest } from 'store/{module}/actions';
+
+const {Module}List: React.FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const { items, loading, error } = useSelector((state: RootState) => state.{module});
+  
+  useEffect(() => {
+    dispatch(get{Module}sRequest({}));
+  }, [dispatch]);
+  
+  if (loading) {
+    return (
+      <MainCard>
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+          <Typography>Loading...</Typography>
+        </Box>
+      </MainCard>
+    );
+  }
+  
+  if (error) {
+    return (
+      <MainCard>
+        <Typography color="error">{error}</Typography>
+      </MainCard>
+    );
+  }
+  
+  return (
+    <MainCard
+      title={
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h3">{Module}s ({items.length})</Typography>
+          <Button
+            variant="contained"
+            startIcon={<IconPlus />}
+            onClick={() => navigate('create')}
+          >
+            Add New
+          </Button>
+        </Box>
+      }
+    >
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell align="right">Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {items.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.status_display}</TableCell>
+                <TableCell align="right">
+                  <IconButton size="small" onClick={() => navigate(`${item.id}`)}>
+                    <IconEdit size={18} />
+                  </IconButton>
+                  <IconButton size="small" color="error">
+                    <IconTrash size={18} />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </MainCard>
+  );
+};
+
+export default {Module}List;
+```
+
+---
+
+## 🚨 Critical Rules
+
+### Backend
+1. ✅ **Always** filter by `business` in `get_queryset()`
+2. ✅ **Always** set `business` in `perform_create()`
+3. ✅ Use `settings.AUTH_USER_MODEL` for user references
+4. ✅ Add database indexes for frequently queried fields
+5. ✅ Use `select_related()` and `prefetch_related()` to avoid N+1
+6. ✅ All API URLs end with trailing slash `/`
+
+### Frontend
+1. ✅ **Zero linting errors** - Run `npm run lint` before commit
+2. ✅ Remove **all** unused imports and variables
+3. ✅ Create TypeScript types **first** before components
+4. ✅ Use PATCH for partial updates, PUT for full updates
+5. ✅ Use shared components from `shared/components/`
+6. ✅ Apply premium design patterns (gradient headers, consistent cards)
+
+### Integration
+1. ✅ Backend response structure matches frontend types
+2. ✅ Proper error handling on both sides
+3. ✅ Loading states on frontend for all async operations
+4. ✅ Test complete end-to-end flow before marking done
+
+---
+
+## 🎯 Module Addition Checklist
+
+### Phase 1: Backend (30-45 min)
+- [ ] Create model in `apps/{app}/models/`
+- [ ] Add to `apps/{app}/models/__init__.py` if using sub-modules
+- [ ] Create serializers in `apps/{app}/serializers/`
+- [ ] Create viewset in `apps/{app}/views/`
+- [ ] Add URL patterns in `apps/{app}/urls.py`
+- [ ] Run `py manage.py makemigrations {app}`
+- [ ] Run `py manage.py migrate`
+- [ ] Test with Postman/curl
+- [ ] Verify multi-tenancy isolation
+
+### Phase 2: Frontend Types & API (15 min)
+- [ ] Create `types/{module}.ts` with all interfaces
+- [ ] Create `api/{module}.ts` with API functions
+
+### Phase 3: Frontend Redux (20-30 min)
+- [ ] Create `store/{module}/actionTypes.ts`
+- [ ] Create `store/{module}/actions.ts`
+- [ ] Create `store/{module}/reducer.ts`
+- [ ] Create `store/{module}/saga.ts`
+- [ ] Create `store/{module}/index.ts`
+- [ ] Register reducer in `store/reducer.ts`
+- [ ] Register saga in `store/sagas.ts`
+
+### Phase 4: Frontend Components (30-60 min)
+- [ ] Create `views/application/{app}/{module}/index.tsx`
+- [ ] Create list component
+- [ ] Create create/edit form
+- [ ] Create detail view
+- [ ] Apply premium UI patterns
+
+### Phase 5: Routes & Navigation (10 min)
+- [ ] Add routes to `routes/MainRoutes.tsx`
+- [ ] Add menu items to `menu-items/application.ts`
+
+### Phase 6: Quality & Testing (15-20 min)
+- [ ] Run `npm run lint` - fix ALL errors
+- [ ] Test complete CRUD flow
+- [ ] Test on mobile/tablet
+- [ ] Verify multi-tenancy
+- [ ] Check console for errors
+
+### Phase 7: Documentation (10 min)
+- [ ] Update `docs/apps/{app}/{module}/FULLSTACK.md`
+- [ ] Update `docs/apps/{app}/{module}/API.md`
+- [ ] Update `docs/apps/{app}/{module}/TODO.md`
+
+**Total Time Estimate**: 2-3 hours for complete feature
+
+---
+
+## 🎯 Recommended Next Steps Template
+
+At the end of every task, provide:
+
+```markdown
+## 🎯 Recommended Next Steps
+
+### Backend Tasks
+- [ ] [Specific file and change needed]
+- [ ] Run migrations: `py manage.py migrate {app}`
+- [ ] Create demo data: `py manage.py create_demo_{module}s`
+- [ ] Test endpoints: [specific endpoints to test]
+
+### Frontend Tasks
+- [ ] [Specific component and change needed]
+- [ ] Run linting: `npm run lint` and fix errors
+- [ ] Test feature in browser
+- [ ] Verify responsive design
+
+### Integration
+- [ ] Test end-to-end flow
+- [ ] Verify error handling
+- [ ] Check loading states
+
+### Documentation
+- [ ] Update FULLSTACK.md: [specific sections]
+- [ ] Update API.md: [new endpoints]
+- [ ] Update TODO.md: [completion percentage]
+```
+
+---
+
+## Reference Examples
+
+**Complete Full-Stack Implementations:**
+- **Clients Module**: `apps/clients/` (backend) + `frontend/src/views/application/clients/` (frontend)
+- **WhatsApp Module**: Complex models with campaigns
+- **Contacts Module**: Import/export functionality
+
+**Premium UI Patterns:**
+- Client detail tabs in `frontend/src/views/application/clients/components/tabs/`
+
+---
+
+**Remember**: Read FULLSTACK.md before starting. Write complete features. Zero linting errors. Multi-tenancy always. Document as you go.

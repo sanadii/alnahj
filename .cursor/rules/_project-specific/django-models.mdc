@@ -1,0 +1,313 @@
+---
+alwaysApply: false
+---
+# Backend Database & Models - Django ORM
+
+**Usage**: Apply with `@backend-models-db.mdc` when working on Django models, database queries, or migrations.
+
+## Critical Rules
+
+### 🚨 Multi-Tenancy (MANDATORY)
+**Every entity MUST be scoped to a business**
+
+```python
+def get_queryset(self):
+    """CRITICAL: Filter by business for multi-tenancy"""
+    return MyModel.objects.filter(
+        business=self.request.user.business
+    )
+
+def perform_create(self, serializer):
+    """CRITICAL: Auto-set business and creator"""
+    serializer.save(
+        business=self.request.user.business,
+        created_by=self.request.user
+    )
+```
+
+### 🚨 Use settings.AUTH_USER_MODEL
+```python
+# ✅ CORRECT
+from django.conf import settings
+
+class MyModel(models.Model):
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+# ❌ WRONG
+from django.contrib.auth.models import User  # Don't do this!
+```
+
+## Model Pattern (Multi-Tenant)
+
+### Standard Model Template
+```python
+from django.db import models
+from django.conf import settings
+
+class {Module}(models.Model):
+    """
+    {Description}
+    
+    Multi-tenant: Isolated by business
+    """
+    
+    # Multi-tenancy (CRITICAL: ALWAYS INCLUDE)
+    business = models.ForeignKey(
+        'business.Business',
+        on_delete=models.CASCADE,
+        related_name='{app}_{module}s',
+        help_text='Business this record belongs to'
+    )
+    
+    # Core fields
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    
+    # Status/state fields
+    STATUS_CHOICES = [
+        ('active', 'Active'),
+        ('inactive', 'Inactive'),
+    ]
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='active'
+    )
+    
+    # Audit fields (ALWAYS INCLUDE)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='{module}_created'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = '{app}_{module}s'
+        ordering = ['-created_at']
+        indexes = [
+            # CRITICAL: Index business + commonly queried fields
+            models.Index(fields=['business', 'status']),
+            models.Index(fields=['business', 'created_at']),
+            models.Index(fields=['business', 'name']),
+        ]
+        verbose_name = '{Module}'
+        verbose_name_plural = '{Module}s'
+    
+    def __str__(self):
+        return self.name
+    
+    # Business logic methods
+    @property
+    def is_active(self):
+        return self.status == 'active'
+    
+    def activate(self):
+        """Activate this record"""
+        self.status = 'active'
+        self.save(update_fields=['status'])
+    
+    def deactivate(self):
+        """Deactivate this record"""
+        self.status = 'inactive'
+        self.save(update_fields=['status'])
+```
+
+### Model Best Practices
+- ✅ Always add `business` ForeignKey
+- ✅ Always add audit fields (`created_by`, `created_at`, `updated_at`)
+- ✅ Use `blank=True, null=True` for optional fields
+- ✅ Add indexes for frequently queried fields
+- ✅ Use choices for status fields
+- ✅ Add `help_text` for clarity
+- ✅ Implement `__str__()` method
+- ✅ Add business logic as methods/properties
+
+## Query Optimization
+
+### Avoid N+1 Queries
+
+#### Use select_related (ForeignKey)
+```python
+# ❌ BAD: N+1 query problem
+items = {Module}.objects.all()
+for item in items:
+    print(item.created_by.email)  # Hits database each time!
+
+# ✅ GOOD: Single query with JOIN
+items = {Module}.objects.select_related('created_by', 'business').all()
+for item in items:
+    print(item.created_by.email)  # No extra queries
+```
+
+#### Use prefetch_related (ManyToMany, Reverse FK)
+```python
+# ❌ BAD: N+1 query problem
+items = {Module}.objects.all()
+for item in items:
+    print(item.tags.all())  # Hits database each time!
+
+# ✅ GOOD: Two queries total
+items = {Module}.objects.prefetch_related('tags').all()
+for item in items:
+    print(item.tags.all())  # No extra queries
+```
+
+### Aggregations
+```python
+from django.db.models import Count, Sum, Avg, Max, Min
+
+# Count
+stats = {Module}.objects.aggregate(
+    total=Count('id'),
+    active_count=Count('id', filter=models.Q(status='active'))
+)
+
+# Sum/Avg
+financials = Invoice.objects.aggregate(
+    total_revenue=Sum('amount'),
+    average_invoice=Avg('amount')
+)
+
+# Annotate (per-item aggregation)
+categories = Category.objects.annotate(
+    product_count=Count('products')
+).filter(product_count__gt=0)
+```
+
+### Efficient Existence Checks
+```python
+# ❌ BAD: Loads all records into memory
+if {Module}.objects.filter(email=email).count() > 0:
+    pass
+
+# ✅ GOOD: Stops at first match
+if {Module}.objects.filter(email=email).exists():
+    pass
+```
+
+### Bulk Operations
+```python
+# Bulk create
+{Module}.objects.bulk_create([
+    {Module}(name='Item 1', business=business),
+    {Module}(name='Item 2', business=business),
+])
+
+# Bulk update
+items = {Module}.objects.filter(business=business)
+items.update(status='active')
+
+# Bulk delete
+{Module}.objects.filter(status='inactive').delete()
+```
+
+## Database Best Practices
+
+### Indexes
+```python
+class Meta:
+    indexes = [
+        # Single field
+        models.Index(fields=['business']),
+        
+        # Multi-field (order matters!)
+        models.Index(fields=['business', 'status']),
+        models.Index(fields=['business', 'created_at']),
+        
+        # Descending order
+        models.Index(fields=['business', '-created_at']),
+    ]
+```
+
+**Index Strategy**:
+- ✅ Index fields used in `filter()`, `order_by()`
+- ✅ Multi-field indexes for common filter combinations
+- ✅ Always include `business` in multi-tenant systems
+- ❌ Don't over-index (slows writes)
+
+### Migrations
+```bash
+# Create migration
+py manage.py makemigrations {app}
+
+# Review migration file
+cat apps/{app}/migrations/0001_initial.py
+
+# Apply migration
+py manage.py migrate
+
+# Rollback migration
+py manage.py migrate {app} {previous_migration_number}
+
+# Show migrations
+py manage.py showmigrations {app}
+```
+
+### Data Migrations
+```python
+# apps/{app}/migrations/0002_populate_data.py
+from django.db import migrations
+
+def populate_data(apps, schema_editor):
+    MyModel = apps.get_model('{app}', 'MyModel')
+    MyModel.objects.bulk_create([
+        MyModel(name='Item 1'),
+        MyModel(name='Item 2'),
+    ])
+
+class Migration(migrations.Migration):
+    dependencies = [
+        ('{app}', '0001_initial'),
+    ]
+    
+    operations = [
+        migrations.RunPython(populate_data),
+    ]
+```
+
+## Testing
+
+### API Test
+```python
+from rest_framework.test import APITestCase
+from apps.business.models import Business
+from apps.{app}.models import {Module}
+
+class {Module}APITest(APITestCase):
+    def setUp(self):
+        self.business = Business.objects.create(name='Test Business')
+        self.user = User.objects.create_user(
+            email='test@example.com',
+            password='password123',
+            business=self.business
+        )
+        self.client.force_authenticate(user=self.user)
+    
+    def test_list_{module}s(self):
+        response = self.client.get('/api/{module}s/')
+        self.assertEqual(response.status_code, 200)
+    
+    def test_create_{module}(self):
+        data = {'name': 'Test {Module}'}
+        response = self.client.post('/api/{module}s/', data)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['name'], 'Test {Module}')
+```
+
+## Quick Reference
+
+**Model**: Multi-tenant, audit fields, indexes  
+**Queries**: select_related, prefetch_related, exists()  
+**Optimization**: Index common filters, avoid N+1 queries  
+**Migrations**: Review before running, keep reversible  
+
+---
+
+**Reference**: `docs/architecture/BACKEND-ARCHITECTURE.md`

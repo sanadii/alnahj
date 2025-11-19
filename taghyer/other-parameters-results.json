@@ -1,0 +1,265 @@
+[
+  {
+    "test": "show_related = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_related": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "show_history = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_history": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "show_votes = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_votes": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "show_family = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_family": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "show_team = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_team": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "show_all = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_all": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "get_details = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "get_details": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "details = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "details": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "full_details = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "full_details": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "export = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "export": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "format = json",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "format": "json"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "with_metadata = 1",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "with_metadata": "1"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "internal_reference (by internal ID)",
+    "payload": {
+      "internal_reference": "83520",
+      "search_id": "30"
+    },
+    "success": true,
+    "responseType": "text",
+    "keys": null,
+    "length": 0,
+    "data": ""
+  },
+  {
+    "test": "id instead of row_id",
+    "payload": {
+      "id": "2",
+      "search_id": "30",
+      "show_details": "1"
+    },
+    "success": true,
+    "responseType": "json",
+    "keys": [
+      "show_related_btn",
+      "status",
+      "mydata",
+      "keys",
+      "the_tags"
+    ],
+    "length": null,
+    "data": {
+      "show_related_btn": "1",
+      "status": "",
+      "mydata": [],
+      "keys": [],
+      "the_tags": []
+    }
+  },
+  {
+    "test": "record_id instead of row_id",
+    "payload": {
+      "record_id": "2",
+      "search_id": "30",
+      "show_details": "1"
+    },
+    "success": true,
+    "responseType": "json",
+    "keys": [
+      "show_related_btn",
+      "status",
+      "mydata",
+      "keys",
+      "the_tags"
+    ],
+    "length": null,
+    "data": {
+      "show_related_btn": "1",
+      "status": "",
+      "mydata": [],
+      "keys": [],
+      "the_tags": []
+    }
+  },
+  {
+    "test": "Multiple flags combined",
+    "payload": {
+      "row_id": "2",
+      "search_id": "30",
+      "show_details": "1",
+      "show_related": "1",
+      "show_history": "1"
+    },
+    "success": true,
+    "responseType": "json",
+    "keys": [
+      "show_related_btn",
+      "status",
+      "mydata",
+      "keys",
+      "the_tags"
+    ],
+    "length": null,
+    "data": {
+      "show_related_btn": "1",
+      "status": "",
+      "mydata": [
+        "إناث",
+        "مسجل",
+        "AA51",
+        "Community Services Team",
+        "Ahmadi Services Group"
+      ],
+      "keys": [
+        "gender",
+        "registeration_status",
+        "team_icon",
+        "team_name",
+        "group_name"
+      ],
+      "the_tags": [
+        "الجنس",
+        "حالة القيد",
+        "رمز الفريق",
+        "الفريق",
+        "المجموعة"
+      ]
+    }
+  }
+]

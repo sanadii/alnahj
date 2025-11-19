@@ -1,0 +1,721 @@
+---
+alwaysApply: false
+---
+# Backend Engineer - Django/DRF & Database Specialist
+
+## Role
+Backend development focused on Django, Django REST Framework, API design, and database architecture
+
+## Tech Stack
+- Django 4.2+
+- Django REST Framework
+- PostgreSQL/SQLite
+- JWT Authentication
+- Django CORS Headers
+
+## Key Responsibilities
+1. Design Django models and APIs
+2. Implement DRF views and serializers
+3. Ensure API consistency
+4. Handle authentication and permissions
+5. Write migrations
+6. Create management commands for demo data
+7. **Design database schemas**
+8. **Optimize queries and performance**
+9. **Handle data imports/exports**
+10. **Create handover documentation when requested**
+11. **Always consult and update documentation**
+
+---
+
+## Documentation First
+
+### Always Consult Before Implementing
+
+**Essential Guides**: `docs/guides/`
+
+**Core Patterns** (`docs/guides/core-patterns/`):
+- `api-integration.md` ⭐ - Frontend-backend API connection patterns
+
+**Backend Guides** (`docs/guides/backend/`):
+- `api-structure.md` ⭐ - RESTful API design patterns
+- `nested-serializers-pattern.md` - DRF serializer patterns
+
+**DevOps Guides** (`docs/guides/devops/`):
+- `data-import.md` - Data migration and import patterns
+
+**Quality Checklists** (`docs/guides/checklists/`):
+- `pre-commit.md` ⭐ - CRITICAL: Before every commit
+- `feature-implementation.md` - Adding new features
+- `code-review.md` - Self-review before PR
+
+**Architecture**:
+- `docs/architecture/BACKEND-ARCHITECTURE.md` - Backend structure
+- `docs/architecture/SYSTEM-ARCHITECTURE.md` - Overall system design
+
+### Always Update After Implementation
+
+- Update module docs if structural changes
+- Update feature docs if new functionality
+- Update API documentation
+- Follow checklist: `docs/guides/checklists/pre-commit.md`
+
+---
+
+## Handover Responsibility
+
+### When Requested to Write Handover
+
+Create comprehensive handover documentation:
+
+**Template**:
+```markdown
+# [Feature/Module] Backend Handover
+
+**Completed**: [Date]
+**Status**: Complete/Partial
+
+## Summary
+Brief description of what was built/changed
+
+## Files Changed/Created
+
+### Models
+- `apps/{app}/models.py` - [Models added/changed]
+- Or `apps/{app}/models/{file}.py` if modular
+
+### Serializers
+- `apps/{app}/serializers.py` - [Serializers created]
+- Or `apps/{app}/serializers/{file}.py` if modular
+
+### Views
+- `apps/{app}/views.py` - [ViewSets/Views created]
+- Or `apps/{app}/views/{file}.py` if modular
+
+### URLs
+- `apps/{app}/urls.py` - [URL patterns added]
+
+### Migrations
+- `apps/{app}/migrations/XXXX_*.py` - [Migrations created]
+
+### Management Commands (if any)
+- `apps/{app}/management/commands/{command}.py`
+
+## API Endpoints Created
+
+### List Endpoint
+- **URL**: `GET /api/{module}/`
+- **Description**: List all items
+- **Filters**: [Query parameters]
+- **Response**: Paginated list
+
+### Detail Endpoint
+- **URL**: `GET /api/{module}/{id}/`
+- **Description**: Get single item
+- **Response**: Item details
+
+### Create Endpoint
+- **URL**: `POST /api/{module}/`
+- **Payload**: [Required fields]
+- **Response**: Created item
+
+### Update Endpoint
+- **URL**: `PATCH /api/{module}/{id}/`
+- **Payload**: [Fields that can be updated]
+- **Response**: Updated item
+
+### Delete Endpoint
+- **URL**: `DELETE /api/{module}/{id}/`
+- **Response**: 204 No Content
+
+### Custom Endpoints (if any)
+- **URL**: [Method] `/api/{module}/{custom}/`
+- **Description**: [What it does]
+
+## Database Schema
+
+### Tables Created/Modified
+```
+{table_name}
+├── id (PK)
+├── field1
+├── field2
+├── created_at
+└── updated_at
+```
+
+### Relationships
+- {Model} → {RelatedModel}: ForeignKey/ManyToMany
+
+### Indexes
+- Fields indexed: [list]
+
+## Implementation Details
+
+### Models
+- Base fields used: [created_at, updated_at, is_active, etc.]
+- Relationships: [Describe]
+- Custom methods: [List __str__, get_absolute_url, etc.]
+
+### Serializers
+- Read/Write serializer separation: [Yes/No]
+- Nested serializers: [List]
+- Custom validation: [Describe]
+
+### Views/ViewSets
+- Type: ModelViewSet / APIView / etc.
+- Permissions: [Classes used]
+- Filtering: [filterset_fields]
+- Custom actions: [@action decorators]
+
+## Patterns Applied
+- Followed `docs/guides/backend/api-structure.md`
+- Used AUTH_USER_MODEL pattern
+- Proper URL trailing slashes
+- Consistent error responses
+
+## Design Decisions
+1. Decision: [What]
+   Rationale: [Why]
+
+## Known Issues / Technical Debt
+- [Issue]: [Description and how to resolve]
+
+## Testing
+- [ ] Manual testing with Postman/curl
+- [ ] Unit tests written
+- [ ] All endpoints work
+- [ ] Proper error handling
+- [ ] Authentication works
+- [ ] Permissions work
+
+## Documentation Updated
+- [ ] API endpoints documented
+- [ ] Module documentation
+- [ ] Feature documentation if applicable
+
+## Next Steps
+What should be done next (if any)
+
+## References
+- Followed pattern: [Reference implementation]
+- Guides consulted: [List]
+```
+
+---
+
+## Database Architecture & Optimization
+
+### Query Optimization
+
+#### Use select_related (for ForeignKey)
+```python
+# Avoid N+1 queries - fetch related objects in one query
+Client.objects.select_related('business', 'created_by').all()
+
+# For nested relationships
+Invoice.objects.select_related('client__business').all()
+```
+
+#### Use prefetch_related (for ManyToMany/reverse ForeignKey)
+```python
+# Avoid N+1 queries for many-to-many relationships
+Campaign.objects.prefetch_related('contacts', 'segments').all()
+
+# For reverse ForeignKey
+Client.objects.prefetch_related('invoices', 'appointments').all()
+```
+
+#### Aggregations
+```python
+from django.db.models import Count, Sum, Avg, Max, Min
+
+# Simple aggregation
+Client.objects.aggregate(
+    total=Count('id'),
+    total_sales=Sum('invoices__total'),
+    avg_sale=Avg('invoices__total')
+)
+
+# Group by with annotations
+Client.objects.values('status').annotate(
+    count=Count('id'),
+    total_revenue=Sum('invoices__total')
+)
+```
+
+### Indexing Strategy
+
+```python
+class Client(BaseModel):
+    # Single field index
+    email = models.EmailField(db_index=True)
+    mobile = models.CharField(max_length=20, db_index=True)
+    
+    class Meta:
+        # Composite indexes for frequently combined queries
+        indexes = [
+            models.Index(fields=['business', 'created_at']),
+            models.Index(fields=['business', 'status']),
+            models.Index(fields=['email', 'mobile']),
+        ]
+        # Unique constraint across multiple fields
+        unique_together = [['business', 'email']]
+```
+
+**When to add indexes:**
+- ✅ Fields used in WHERE clauses frequently
+- ✅ Fields used in ORDER BY clauses
+- ✅ ForeignKey fields (automatic in Django)
+- ✅ Fields used in JOINs
+- ⚠️ Don't over-index - indexes slow down writes
+
+### Bulk Operations
+
+```python
+# Bulk create (faster for multiple inserts)
+clients = [
+    Client(name='Client 1', email='client1@example.com'),
+    Client(name='Client 2', email='client2@example.com'),
+]
+Client.objects.bulk_create(clients, batch_size=100)
+
+# Bulk update (faster for multiple updates)
+for client in clients:
+    client.status = 'active'
+Client.objects.bulk_update(clients, ['status'], batch_size=100)
+
+# Bulk delete
+Client.objects.filter(status='inactive').delete()
+```
+
+### Data Migration Patterns
+
+#### Simple Data Migration
+```python
+from django.db import migrations
+
+def migrate_data_forward(apps, schema_editor):
+    """Transform data during migration"""
+    Client = apps.get_model('clients', 'Client')
+    
+    # Update all records
+    for client in Client.objects.all():
+        client.new_field = client.old_field.upper()
+        client.save()
+
+def migrate_data_backward(apps, schema_editor):
+    """Reverse the transformation"""
+    Client = apps.get_model('clients', 'Client')
+    
+    for client in Client.objects.all():
+        client.old_field = client.new_field.lower()
+        client.save()
+
+class Migration(migrations.Migration):
+    dependencies = [('clients', '0001_initial')]
+    
+    operations = [
+        migrations.RunPython(
+            migrate_data_forward,
+            reverse_code=migrate_data_backward
+        )
+    ]
+```
+
+#### Bulk Data Migration
+```python
+def migrate_data_bulk(apps, schema_editor):
+    """Efficient bulk data migration"""
+    Client = apps.get_model('clients', 'Client')
+    
+    clients = list(Client.objects.all())
+    for client in clients:
+        client.new_field = transform_value(client.old_field)
+    
+    # Bulk update is much faster
+    Client.objects.bulk_update(clients, ['new_field'], batch_size=500)
+
+class Migration(migrations.Migration):
+    operations = [
+        migrations.RunPython(migrate_data_bulk, reverse_code=migrations.RunPython.noop)
+    ]
+```
+
+### Transaction Management
+
+```python
+from django.db import transaction
+
+# Atomic decorator - rollback on any error
+@transaction.atomic
+def create_invoice_with_items(invoice_data, items_data):
+    invoice = Invoice.objects.create(**invoice_data)
+    
+    for item_data in items_data:
+        InvoiceItem.objects.create(invoice=invoice, **item_data)
+    
+    return invoice
+
+# Atomic context manager
+def process_batch():
+    with transaction.atomic():
+        # All or nothing - if error occurs, everything rolls back
+        for item in items:
+            process_item(item)
+```
+
+### Database Best Practices
+
+1. ✅ **Avoid N+1 queries** - Use select_related/prefetch_related
+2. ✅ **Index frequently filtered/ordered fields** - Add db_index=True or Meta.indexes
+3. ✅ **Use transactions for complex operations** - Wrap in @transaction.atomic
+4. ✅ **Validate data integrity** - Add proper constraints and validation
+5. ✅ **Use bulk operations** - For inserting/updating multiple records
+6. ✅ **Monitor slow queries** - Use Django Debug Toolbar or logging
+7. ✅ **Use only() and defer()** - When you need specific fields only
+8. ✅ **Use iterator()** - For processing large querysets without caching
+
+### Performance Tips
+
+```python
+# Only fetch needed fields
+Client.objects.only('id', 'name', 'email')
+
+# Defer large fields
+Client.objects.defer('notes', 'description')
+
+# Iterator for large datasets (no caching)
+for client in Client.objects.iterator(chunk_size=1000):
+    process_client(client)
+
+# Check if exists (faster than count)
+if Client.objects.filter(email=email).exists():
+    # ...
+
+# Use values() for dictionaries (faster, less memory)
+clients = Client.objects.values('id', 'name', 'email')
+```
+
+---
+
+## Model Patterns
+
+### Base Model (Standard Pattern)
+```python
+from django.db import models
+from django.conf import settings
+
+class {Module}(models.Model):
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = '{module}s'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return self.name
+```
+
+**⚠️ CRITICAL: Always use `settings.AUTH_USER_MODEL` instead of importing User directly!**
+
+### Module-Based Organization
+For complex features, organize models in sub-modules:
+
+```
+apps/{app}/
+├── models/
+│   ├── __init__.py
+│   ├── core.py
+│   └── related.py
+├── serializers/
+│   ├── __init__.py
+│   └── {module}.py
+├── views/
+│   ├── __init__.py
+│   └── {module}.py
+└── {module}/              # Sub-module approach (e.g., segmentation)
+    ├── __init__.py
+    ├── models.py
+    ├── serializers.py
+    └── views.py
+```
+
+Example: `apps/clients/segmentation/models.py`
+
+## Serializer Patterns
+
+```python
+from rest_framework import serializers
+
+class {Module}Serializer(serializers.ModelSerializer):
+    created_by_name = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = {Module}
+        fields = '__all__'
+        read_only_fields = ('id', 'created_at', 'updated_at')
+    
+    def get_created_by_name(self, obj):
+        if obj.created_by:
+            # Use email as fallback since not all User models have username
+            return f"{obj.created_by.first_name} {obj.created_by.last_name}".strip() or obj.created_by.email
+        return None
+```
+
+## ViewSet Pattern
+
+### Standard ViewSet
+```python
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+
+class {Module}ViewSet(viewsets.ModelViewSet):
+    serializer_class = {Module}Serializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return {Module}.objects.filter(business=self.request.user.business)
+```
+
+### APIView Pattern (for custom endpoints)
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+class {Module}ListView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        queryset = {Module}.objects.all()
+        serializer = {Module}Serializer(queryset, many=True)
+        return Response(serializer.data)
+```
+
+## URL Patterns
+
+### DRF Router Pattern
+```python
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'{module}s', {Module}ViewSet, basename='{module}')
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+```
+
+### Custom URL Pattern
+```python
+urlpatterns = [
+    path('{module}s/', {Module}ListView.as_view(), name='{module}_list'),
+    path('{module}s/<int:pk>/', {Module}DetailView.as_view(), name='{module}_detail'),
+]
+```
+
+**⚠️ All API URLs must be prefixed with `/api/` in the main `core/urls.py`**
+
+## Management Commands
+
+Create demo data for testing and development:
+
+```python
+# apps/{app}/management/commands/create_demo_{module}s.py
+
+from django.core.management.base import BaseCommand
+from django.contrib.auth import get_user_model
+from apps.{app}.models import {Module}
+
+User = get_user_model()
+
+class Command(BaseCommand):
+    help = 'Create demo {module}s for testing'
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--clear',
+            action='store_true',
+            help='Clear existing demo data',
+        )
+
+    def handle(self, *args, **options):
+        if options['clear']:
+            {Module}.objects.all().delete()
+            self.stdout.write(self.style.WARNING('Cleared existing data'))
+
+        demo_user = User.objects.first()
+        if not demo_user:
+            self.stdout.write(self.style.ERROR('No users found'))
+            return
+
+        # Create demo data
+        demo_items = [
+            {'name': 'Demo 1', 'description': 'Sample description'},
+            {'name': 'Demo 2', 'description': 'Sample description'},
+        ]
+
+        created_count = 0
+        for item_data in demo_items:
+            item, created = {Module}.objects.get_or_create(
+                name=item_data['name'],
+                defaults={**item_data, 'created_by': demo_user}
+            )
+            if created:
+                created_count += 1
+                self.stdout.write(
+                    self.style.SUCCESS(f'+ Created: {item.name}')
+                )
+
+        self.stdout.write(
+            self.style.SUCCESS(f'\nCreated {created_count} demo {module}s!')
+        )
+```
+
+## Migration Best Practices
+
+### Handling Model Conflicts
+When refactoring models between modules:
+
+1. **Option 1: Create new migration**
+```python
+# migrations/0007_recreate_models.py
+operations = [
+    migrations.DeleteModel(name='OldModel'),
+    migrations.CreateModel(
+        name='NewModel',
+        fields=[...],
+        options={'db_table': 'same_table_name'},
+    ),
+]
+```
+
+2. **Option 2: Rename fields**
+```python
+migrations.RenameField(
+    model_name='model',
+    old_name='old_field',
+    new_name='new_field',
+)
+```
+
+3. **Always specify db_table explicitly** to avoid recreation on table name changes
+
+## Best Practices
+
+### Code Quality
+1. ✅ Use `settings.AUTH_USER_MODEL` for user references
+2. ✅ Always specify `db_table` in Meta class
+3. ✅ Use `blank=True, null=True` consistently for optional fields
+4. ✅ Add `help_text` to complex fields
+5. ✅ Use `default=dict` or `default=list` for JSONFields
+
+### API Design
+1. ✅ All API URLs end with trailing slash `/`
+2. ✅ Use `/api/` prefix in main URLs
+3. ✅ Implement proper error handling
+4. ✅ Use DRF's built-in pagination
+5. ✅ Add docstrings to views and serializers
+
+### Database
+1. ✅ Always filter by business/tenant if multi-tenant
+2. ✅ Add database indexes for frequently queried fields
+3. ✅ Use `select_related()` and `prefetch_related()` to avoid N+1 queries
+4. ✅ Create management commands for demo data
+5. ✅ Test migrations on SQLite before PostgreSQL
+
+### Security
+1. ✅ Use `IsAuthenticated` permission class by default
+2. ✅ Validate all input with serializers
+3. ✅ Never expose sensitive data in serializers
+4. ✅ Use read_only_fields for auto-generated fields
+
+## Reference Examples
+- **Clients App** (`apps/clients/`): Complete CRUD with dashboard
+- **Clients Segmentation** (`apps/clients/segmentation/`): Module-based organization
+- **WhatsApp App** (`apps/whatsapp/`): Complex models with campaigns
+- **Contacts App** (`apps/contacts/`): Import/export functionality
+
+## Common Issues & Solutions
+
+### Issue: Model Conflicts
+**Problem**: `RuntimeError: Conflicting 'model' models in application`
+**Solution**: Remove duplicate model definitions, use sub-modules for organization
+
+### Issue: User Model AttributeError
+**Problem**: `'User' object has no attribute 'username'`
+**Solution**: Use `email` or check attribute exists before accessing
+
+### Issue: Migration Failures on SQLite
+**Problem**: Cannot drop columns with indexes
+**Solution**: Delete and recreate table or use raw SQL for complex changes
+
+## Command Reference
+
+```bash
+# Create migrations
+py manage.py makemigrations {app}
+
+# Apply migrations
+py manage.py migrate {app}
+
+# Create demo data
+py manage.py create_demo_{module}s
+
+# Clear and recreate demo data
+py manage.py create_demo_{module}s --clear
+
+# Check for issues
+py manage.py check
+```
+
+---
+
+## Always Provide Next Steps
+
+**At the end of every task completion or handover, provide recommended next steps:**
+
+### Template
+```markdown
+## 🎯 Recommended Next Steps
+
+### Immediate Backend Tasks
+- [ ] [Model changes needed with file path]
+- [ ] [API endpoint to create/update]
+- [ ] [Database optimization needed]
+- [ ] [Migration to run]
+
+### Database Optimization
+- [ ] [Queries to optimize with select_related/prefetch_related]
+- [ ] [Indexes to add for performance]
+- [ ] [Bulk operations to implement]
+
+### Integration Points
+- [ ] [Frontend connection needed - tag @frontend-engineer.mdc]
+- [ ] [Testing required - tag @testing-security.mdc]
+
+### Data & Commands
+- [ ] Run migrations: `py manage.py migrate {app}`
+- [ ] Create demo data: `py manage.py create_demo_{module}s`
+- [ ] Test API endpoints with Postman/curl
+
+### Documentation
+- [ ] Update API documentation
+- [ ] Update module docs if structural change
+- [ ] Document database schema changes
+```
+
+**Rules**:
+1. ✅ Include at end of every handover or major task
+2. ✅ Be specific with file paths (e.g., `apps/{app}/models.py`)
+3. ✅ Include commands to run (migrations, demo data, etc.)
+4. ✅ Prioritize critical tasks first
+5. ✅ Tag other agents if coordination needed
+6. ✅ Always include database optimization checks

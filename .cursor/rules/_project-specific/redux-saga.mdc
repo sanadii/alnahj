@@ -1,0 +1,476 @@
+---
+alwaysApply: false
+---
+# Frontend Redux & State Management Patterns
+
+**Usage**: Apply with `@frontend-redux-patterns.mdc` when working on Redux store, actions, reducers, sagas, or API integration.
+
+## Development Order (CRITICAL)
+
+**Always follow this sequence**:
+1. **Types First** → `types/{module}.ts`
+2. **API Helper** → `helpers/api/{module}.ts` ⭐ **STANDARDIZED LOCATION**
+3. **Redux Store** → `store/{module}/`
+4. **Components** → Use Redux state
+
+**CRITICAL**: All API helpers MUST be in `helpers/api/` directory (NOT `api/` or `backend_helper`)!
+
+## TypeScript Types Pattern
+
+### Create Types FIRST
+```typescript
+// types/{module}.ts - CREATE THIS BEFORE ANYTHING ELSE
+
+export interface {Module} {
+  id: number;
+  name: string;
+  description: string;
+  status: {Status}Type;
+  status_display: string;
+  is_active: boolean;
+  created_by: number;
+  created_by_name: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type {Status}Type = 'active' | 'inactive';
+
+export interface {Module}State {
+  items: {Module}[];
+  item: {Module} | null;
+  loading: boolean;
+  error: string | null;
+  totalCount: number;
+}
+
+export interface {Module}FormData {
+  name: string;
+  description?: string;
+  status?: {Status}Type;
+}
+
+export interface {Module}FilterParams {
+  status?: {Status}Type;
+  search?: string;
+  ordering?: string;
+}
+```
+
+## Redux Store Pattern
+
+### Directory Structure
+```
+store/{module}/
+├── actionTypes.ts    # Action constants
+├── actions.ts        # Action creators
+├── reducer.ts        # State reducer
+├── saga.ts          # Side effects (API calls)
+└── index.ts         # Exports
+```
+
+### 1. Action Types
+```typescript
+// store/{module}/actionTypes.ts
+export const GET_{MODULE}S_REQUEST = 'GET_{MODULE}S_REQUEST';
+export const GET_{MODULE}S_SUCCESS = 'GET_{MODULE}S_SUCCESS';
+export const GET_{MODULE}S_ERROR = 'GET_{MODULE}S_ERROR';
+
+export const GET_{MODULE}_REQUEST = 'GET_{MODULE}_REQUEST';
+export const GET_{MODULE}_SUCCESS = 'GET_{MODULE}_SUCCESS';
+export const GET_{MODULE}_ERROR = 'GET_{MODULE}_ERROR';
+
+export const CREATE_{MODULE}_REQUEST = 'CREATE_{MODULE}_REQUEST';
+export const CREATE_{MODULE}_SUCCESS = 'CREATE_{MODULE}_SUCCESS';
+export const CREATE_{MODULE}_ERROR = 'CREATE_{MODULE}_ERROR';
+
+export const UPDATE_{MODULE}_REQUEST = 'UPDATE_{MODULE}_REQUEST';
+export const UPDATE_{MODULE}_SUCCESS = 'UPDATE_{MODULE}_SUCCESS';
+export const UPDATE_{MODULE}_ERROR = 'UPDATE_{MODULE}_ERROR';
+
+export const DELETE_{MODULE}_REQUEST = 'DELETE_{MODULE}_REQUEST';
+export const DELETE_{MODULE}_SUCCESS = 'DELETE_{MODULE}_SUCCESS';
+export const DELETE_{MODULE}_ERROR = 'DELETE_{MODULE}_ERROR';
+
+export const CLEAR_{MODULE}_ERROR = 'CLEAR_{MODULE}_ERROR';
+```
+
+### 2. Actions
+```typescript
+// store/{module}/actions.ts
+import * as types from './actionTypes';
+import { {Module}, {Module}FormData } from 'types/{module}';
+
+export const get{Module}sRequest = (filter?: any) => ({
+  type: types.GET_{MODULE}S_REQUEST,
+  payload: { filter }
+});
+
+export const get{Module}sSuccess = (data: {Module}[]) => ({
+  type: types.GET_{MODULE}S_SUCCESS,
+  payload: data
+});
+
+export const get{Module}sError = (error: string) => ({
+  type: types.GET_{MODULE}S_ERROR,
+  payload: error
+});
+
+export const create{Module}Request = (data: {Module}FormData) => ({
+  type: types.CREATE_{MODULE}_REQUEST,
+  payload: data
+});
+
+export const create{Module}Success = (data: {Module}) => ({
+  type: types.CREATE_{MODULE}_SUCCESS,
+  payload: data
+});
+
+export const create{Module}Error = (error: string) => ({
+  type: types.CREATE_{MODULE}_ERROR,
+  payload: error
+});
+
+export const update{Module}Request = (id: number, data: Partial<{Module}FormData>) => ({
+  type: types.UPDATE_{MODULE}_REQUEST,
+  payload: { id, data }
+});
+
+export const update{Module}Success = (data: {Module}) => ({
+  type: types.UPDATE_{MODULE}_SUCCESS,
+  payload: data
+});
+
+export const delete{Module}Request = (id: number) => ({
+  type: types.DELETE_{MODULE}_REQUEST,
+  payload: { id }
+});
+
+export const delete{Module}Success = (id: number) => ({
+  type: types.DELETE_{MODULE}_SUCCESS,
+  payload: id
+});
+```
+
+### 3. Reducer
+```typescript
+// store/{module}/reducer.ts
+import { {Module}State } from 'types/{module}';
+import * as types from './actionTypes';
+
+const initialState: {Module}State = {
+  items: [],
+  item: null,
+  loading: false,
+  error: null,
+  totalCount: 0
+};
+
+const {module}Reducer = (state = initialState, action: any): {Module}State => {
+  switch (action.type) {
+    case types.GET_{MODULE}S_REQUEST:
+      return { ...state, loading: true, error: null };
+    
+    case types.GET_{MODULE}S_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: action.payload,
+        totalCount: action.payload.length
+      };
+    
+    case types.GET_{MODULE}S_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    
+    case types.CREATE_{MODULE}_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: [action.payload, ...state.items],
+        totalCount: state.totalCount + 1
+      };
+    
+    case types.UPDATE_{MODULE}_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: state.items.map(item =>
+          item.id === action.payload.id ? action.payload : item
+        )
+      };
+    
+    case types.DELETE_{MODULE}_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        items: state.items.filter(item => item.id !== action.payload),
+        totalCount: state.totalCount - 1
+      };
+    
+    case types.CLEAR_{MODULE}_ERROR:
+      return { ...state, error: null };
+    
+    default:
+      return state;
+  }
+};
+
+export default {module}Reducer;
+```
+
+### 4. Saga ⭐ **STANDARDIZED**
+```typescript
+// store/{module}/saga.ts
+import { call, put, takeLatest } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
+import * as actions from './actions';
+import * as types from './actionTypes';
+import {
+  get{Module}s,
+  create{Module},
+  update{Module},
+  delete{Module}
+} from 'helpers/api/{module}';  // ✅ From helpers/api/
+import { APIResponse } from 'types/api';
+import { {Module} } from 'types/{module}';
+
+/**
+ * Saga: Fetch {module}s
+ */
+function* get{Module}sSaga({ payload }: any): Generator<any, void, APIResponse<{Module}[]>> {
+  try {
+    // ✅ API returns APIResponse<T>
+    const response = yield call(get{Module}s, payload.filter);
+    
+    // ✅ Access response.data (not response directly)
+    yield put(actions.get{Module}sSuccess(response.data));
+    
+    // ✅ Show success message if provided
+    if (response.message) {
+      toast.success(response.message);
+    }
+  } catch (error: any) {
+    const message = error.response?.data?.message || error.message || 'Failed to fetch {module}s';
+    yield put(actions.get{Module}sError(message));
+    toast.error(message);
+  }
+}
+
+/**
+ * Saga: Create {module}
+ */
+function* create{Module}Saga({ payload }: any): Generator<any, void, APIResponse<{Module}>> {
+  try {
+    const response = yield call(create{Module}, payload);
+    yield put(actions.create{Module}Success(response.data));
+    toast.success(response.message || '{Module} created successfully');
+  } catch (error: any) {
+    const message = error.response?.data?.message || error.message || 'Failed to create {module}';
+    yield put(actions.create{Module}Error(message));
+    toast.error(message);
+  }
+}
+
+/**
+ * Saga: Update {module}
+ */
+function* update{Module}Saga({ payload }: any): Generator<any, void, APIResponse<{Module}>> {
+  try {
+    const { id, data } = payload;
+    const response = yield call(update{Module}, id, data);
+    yield put(actions.update{Module}Success(response.data));
+    toast.success(response.message || '{Module} updated successfully');
+  } catch (error: any) {
+    const message = error.response?.data?.message || error.message || 'Failed to update {module}';
+    yield put(actions.update{Module}Error(message));
+    toast.error(message);
+  }
+}
+
+/**
+ * Saga: Delete {module}
+ */
+function* delete{Module}Saga({ payload }: any): Generator<any, void, APIResponse<null>> {
+  try {
+    const response = yield call(delete{Module}, payload.id);
+    yield put(actions.delete{Module}Success(payload.id));
+    toast.success(response.message || '{Module} deleted successfully');
+  } catch (error: any) {
+    const message = error.response?.data?.message || error.message || 'Failed to delete {module}';
+    yield put(actions.delete{Module}Error(message));
+    toast.error(message);
+  }
+}
+
+export default function* {module}Saga(): Generator<any, void, any> {
+  yield takeLatest(types.GET_{MODULE}S_REQUEST, get{Module}sSaga);
+  yield takeLatest(types.CREATE_{MODULE}_REQUEST, create{Module}Saga);
+  yield takeLatest(types.UPDATE_{MODULE}_REQUEST, update{Module}Saga);
+  yield takeLatest(types.DELETE_{MODULE}_REQUEST, delete{Module}Saga);
+}
+```
+
+**Key Changes**:
+- ✅ Import from `helpers/api/{module}` (NOT `api/{module}` or `backend_helper`)
+- ✅ Type saga with `Generator<any, void, APIResponse<T>>`
+- ✅ Access `response.data` (NOT `response` directly)
+- ✅ Show `response.message` to users with toast
+- ✅ Proper error handling with user-friendly messages
+
+### 5. Index (Exports)
+```typescript
+// store/{module}/index.ts
+export * from './actions';
+export * from './actionTypes';
+export { default as {module}Reducer } from './reducer';
+export { default as {module}Saga } from './saga';
+```
+
+### 6. Register in Root Store
+```typescript
+// store/reducer.ts
+import { combineReducers } from 'redux';
+import { {module}Reducer } from './{module}';
+
+const rootReducer = combineReducers({
+  {module}: {module}Reducer,
+  // ... other reducers
+});
+
+export default rootReducer;
+```
+
+```typescript
+// store/sagas.ts
+import { all, fork } from 'redux-saga/effects';
+import { {module}Saga } from './{module}';
+
+export default function* rootSaga() {
+  yield all([
+    fork({module}Saga),
+    // ... other sagas
+  ]);
+}
+```
+
+## API Integration Pattern ⭐ **STANDARDIZED**
+
+### Standard API Response Format
+**ALL APIs return `APIResponse<T>` structure**:
+```typescript
+// types/api.ts
+export interface APIResponse<T = any> {
+  data: T;                    // The actual data
+  message?: string;           // Optional success message
+  meta?: {                    // Optional metadata
+    pagination?: PaginationMeta;
+    [key: string]: any;
+  };
+}
+```
+
+### API Helper Implementation
+```typescript
+// helpers/api/{module}.ts ⭐ CORRECT LOCATION
+import axios from 'utils/axios';
+import { APIResponse } from 'types/api';
+import { {Module}, {Module}FormData, {Module}FilterParams } from 'types/{module}';
+
+/**
+ * Get all {module}s (with optional filters)
+ */
+export const get{Module}s = async (
+  filter?: {Module}FilterParams
+): Promise<APIResponse<{Module}[]>> => {
+  const response = await axios.get('/api/{module}s/', { params: filter });
+  return response.data;  // Returns {data, message, meta}
+};
+
+/**
+ * Get single {module} by ID
+ */
+export const get{Module} = async (id: number): Promise<APIResponse<{Module}>> => {
+  const response = await axios.get(`/api/{module}s/${id}/`);
+  return response.data;
+};
+
+/**
+ * Create new {module}
+ */
+export const create{Module} = async (
+  data: {Module}FormData
+): Promise<APIResponse<{Module}>> => {
+  const response = await axios.post('/api/{module}s/', data);
+  return response.data;
+};
+
+/**
+ * Update {module} (PATCH for partial update)
+ */
+export const update{Module} = async (
+  id: number,
+  data: Partial<{Module}FormData>
+): Promise<APIResponse<{Module}>> => {
+  const response = await axios.patch(`/api/{module}s/${id}/`, data);
+  return response.data;
+};
+
+/**
+ * Delete {module}
+ */
+export const delete{Module} = async (id: number): Promise<APIResponse<null>> => {
+  const response = await axios.delete(`/api/{module}s/${id}/`);
+  return response.data;
+};
+```
+
+**CRITICAL**:
+- ✅ Location: `helpers/api/{module}.ts` (NOT `api/` or `backend_helper`)
+- ✅ All functions return `Promise<APIResponse<T>>`
+- ✅ Use **PATCH** for partial updates, **PUT** for full updates
+- ✅ All URLs end with trailing slash `/`
+- ✅ Include JSDoc comments
+
+## Using Redux in Components
+
+```typescript
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'store';
+import { get{Module}sRequest } from 'store/{module}/actions';
+
+const Component = () => {
+  const dispatch = useDispatch();
+  const { items, loading, error } = useSelector((state: RootState) => state.{module});
+  
+  useEffect(() => {
+    dispatch(get{Module}sRequest({}));
+  }, [dispatch]);
+  
+  return (/* JSX */);
+};
+```
+
+## Quick Reference ⭐ **UPDATED**
+
+**Order**: Types → API → Redux (actionTypes → actions → reducer → saga → index) → Register  
+**Pattern**: Request → Saga → API Call → Success/Error → Reducer → State Update  
+**Loading**: Always track loading/error states  
+**Updates**: PATCH for partial, PUT for full  
+
+**API Standardization Checklist**:
+- ✅ API helper in `helpers/api/{module}.ts` (NOT `api/` or `backend_helper`)
+- ✅ All functions return `Promise<APIResponse<T>>`
+- ✅ Saga accesses `response.data` (NOT `response` directly)
+- ✅ Show `response.message` to users
+- ✅ Type saga: `Generator<any, void, APIResponse<T>>`
+- ✅ Include JSDoc comments in API functions
+- ✅ Use `toast` for user feedback
+
+---
+
+**References**:
+- `docs/architecture/REDUX-ARCHITECTURE.md` - Complete Redux patterns
+- `docs/architecture/frontend/FRONTEND-INTEGRATION-QUICK-REFERENCE.md` - Copy-paste patterns
+- `docs/architecture/FRONTEND-ARCHITECTURE.md` - Overall architecture
+
+**Standardization Status**: 71% Complete (20/28 modules compliant)

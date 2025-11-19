@@ -1,0 +1,147 @@
+# ---------------------------------------------------------------------------
+# General OS & editor cruft
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*.tmp
+*.orig
+*.rej
+.idea/
+.vscode/
+*.iml
+
+# ---------------------------------------------------------------------------
+# Logs, temp files & backups
+# ---------------------------------------------------------------------------
+logs/
+*.log
+*.log.*
+*.bak
+*.backup
+backend/**/*.sql
+tmp/
+temp/
+
+# ---------------------------------------------------------------------------
+# Environment & secrets
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.local
+.envrc
+*.pem
+
+# ---------------------------------------------------------------------------
+# Node / frontend artifacts
+# ---------------------------------------------------------------------------
+node_modules/
+frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+frontend/.yarn/*
+!frontend/.yarn/patches
+!frontend/.yarn/plugins
+!frontend/.yarn/releases
+!frontend/.yarn/sdks
+!frontend/.yarn/versions
+frontend/dist/
+frontend/build/
+frontend/coverage/
+frontend/.parcel-cache/
+frontend/.next/
+frontend/.nuxt/
+frontend/.turbo/
+frontend/.env*
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+frontend/.idea/
+frontend/.vscode/
+frontend/.DS_Store
+*.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Python / backend artifacts
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/__pycache__/
+backend/**/*.py[cod]
+backend/.mypy_cache/
+backend/.ruff_cache/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.tox/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/ENV/
+backend/venv.bak/
+backend/env.bak/
+backend/build/
+backend/dist/
+backend/wheels/
+backend/logs/
+backend/*.log
+backend/db.sqlite3
+backend/db.sqlite3-journal
+backend/media/
+backend/staticfiles/
+backend/static/
+backend/local_settings.py
+backend/core/settingsprod.py
+backend/*.egg-info/
+backend/*.egg
+
+# ---------------------------------------------------------------------------
+# Root-level virtual environments
+# ---------------------------------------------------------------------------
+venv/
+venv*/
+env/
+env*/
+.venv/
+.venv*/
+
+# ---------------------------------------------------------------------------
+# Testing & coverage
+# ---------------------------------------------------------------------------
+.pytest_cache/
+.tox/
+coverage/
+htmlcov/
+
+# ---------------------------------------------------------------------------
+# Documentation outputs
+# ---------------------------------------------------------------------------
+docs/architecture/database/schemaspy/output/
+docs/architecture/database/graph-models/archive/
+*.dot
+
+# ---------------------------------------------------------------------------
+# Tooling artifacts
+# ---------------------------------------------------------------------------
+*.pid
+*.seed
+*.coverage
+.nyc_output/
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.tscache/
+
+# ---------------------------------------------------------------------------
+# SchemaSpy downloads (re-downloadable jars/drivers)
+# ---------------------------------------------------------------------------
+backend/schemaspy/*.jar
+

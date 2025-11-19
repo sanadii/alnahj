@@ -1,0 +1,9 @@
+{
+  "timestamp": "2025-10-24T13:33:54.355Z",
+  "status": 200,
+  "count": 8719,
+  "message": "<h3 style='position: absolute; top: 15px; right: 40px;'>( 8719 ) تطابق </h3>",
+  "recordsReturned": 100,
+  "notify": "<div class='alert alert-success'>تم خصم 5 نقاط للبحث</div>",
+  "query": "SELECT * FROM public_elections WHERE 1 AND registeration_status LIKE '%%' AND  gender LIKE '%%' AND  (  dob LIKE '%%'  )  LIMIT 0, 100"
+}

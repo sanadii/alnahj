@@ -1,0 +1,11 @@
+https://mock-data-api-nextjs.vercel.app/api/account/login
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZTg2ODA5MjgzZTI4Yjk2ZDJkMzg1MzciLCJpYXQiOjE3NTM1MTU0MjUsImV4cCI6MTc1MzYwMTgyNX0.uGkZIoKgsDQA4uW0EbgAUT1bYaA_Po3AAZn1PDH-oVY",
+    "user": {
+        "id": "5e86809283e28b96d2d38537",
+        "email": "esanad@gmail.com",
+        "name": "JWT User",
+        "role": "Admin"
+    }
+}

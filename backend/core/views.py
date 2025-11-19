@@ -1,0 +1,1 @@
+# This file is now empty since AppSetupView was moved to apps/app_setup/views.py 

@@ -1,0 +1,638 @@
+# Election Management System - Project Context
+
+**Kuwait Oil Company - Complete Project Context**
+
+**Last Updated**: October 27, 2025  
+**Status**: ✅ **Backend Complete (10/10), Frontend In Progress**
+
+---
+
+## 📖 Complete Documentation
+
+**⚡ PRIMARY NAVIGATION**: [`docs/INDEX.md`](../../docs/INDEX.md) ⭐
+
+### Documentation Structure
+
+```
+docs/
+├── INDEX.md ⭐                          # Main navigation hub
+├── README.md                            # Documentation overview
+│
+├── getting-started/                     # New developer onboarding
+├── standards/                           # Development standards
+├── backend/                             # Backend architecture
+├── reference/                           # Quick references
+├── archive/                             # Historical documentation
+```
+
+### Key Documentation Files
+
+| Document | Purpose | Lines |
+|----------|---------|-------|
+| **[INDEX.md](../../docs/INDEX.md)** | Complete navigation | 388 |
+| **[Backend Standards](../../docs/standards/BACKEND-STANDARDIZATION-GUIDE.md)** | Backend guide | 894 |
+| **[Frontend Standards](../../docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md)** | Frontend guide | 1,296 |
+| **[API Integration](../../docs/standards/API-INTEGRATION-GUIDE.md)** | API patterns | 646 |
+| **[Full Stack Integration](../../docs/standards/FRONTEND-BACKEND-INTEGRATION.md)** | Integration | 612 |
+| **[App Structure](../../docs/backend/APP-STRUCTURE.md)** | Architecture | 401 |
+
+---
+
+## 🏗️ Project Overview
+
+### What We're Building
+
+**Election Management System** for Kuwait Oil Company - A comprehensive web-based platform for managing elections, from guarantee collection through vote counting and results.
+
+### Target Users
+- **Super Admins**: Full system access
+- **Admins**: Operational management
+- **Supervisors**: Team oversight
+- **Staff**: Guarantee collectors
+- **Observers**: Read-only access
+
+---
+
+## 🛠️ Technology Stack
+
+### Backend (10/10 Score ✅)
+- **Language**: Python 3.11+
+- **Framework**: Django 4.2 + Django REST Framework
+- **Database**: PostgreSQL 15+ (SQLite for development)
+- **Authentication**: JWT (djangorestframework-simplejwt)
+- **API Documentation**: DRF Spectacular
+- **Status**: **Complete & Standardized**
+
+### Frontend (In Progress)
+- **Language**: TypeScript 5.x
+- **Framework**: React 18.x with Hooks
+- **UI Library**: Material-UI (MUI) v5
+- **State Management**: React Context API + Custom Hooks
+- **HTTP Client**: Axios with interceptors
+- **Routing**: React Router v6
+- **Form Management**: React Hook Form + Yup validation
+- **Build Tool**: Vite
+
+---
+
+## 📁 Project Structure
+
+```
+election/
+├── backend/                    # Django backend
+│   ├── apps/                   # Django applications
+│   │   ├── account/           # User authentication & management
+│   │   ├── elections/         # Election configuration (PLURAL)
+│   │   ├── electors/          # Elector database
+│   │   ├── candidates/        # Candidates & parties
+│   │   ├── guarantees/        # Guarantee collection
+│   │   ├── attendees/         # Attendance tracking (PLURAL)
+│   │   ├── voting/            # Voting operations & results
+│   │   ├── reports/           # Analytics & reporting
+│   │   └── utils/             # Shared utilities
+│   ├── core/                  # Django project settings
+│   └── requirements.txt       # Python dependencies
+│
+├── frontend/                  # React frontend
+│   ├── src/
+│   │   ├── api/              # API integration layer
+│   │   ├── components/       # React components
+│   │   ├── views/            # Page-level components
+│   │   ├── hooks/            # Custom React hooks
+│   │   ├── contexts/         # React Context providers
+│   │   ├── types/            # TypeScript type definitions
+│   │   └── utils/            # Utility functions
+│   └── package.json          # Node dependencies
+│
+└── docs/                      # ⭐ ALL DOCUMENTATION
+    ├── INDEX.md               # Main navigation hub
+    ├── getting-started/       # Onboarding
+    ├── standards/             # Development standards
+    ├── backend/               # Backend architecture
+    ├── reference/             # Quick references
+    └── archive/               # Historical docs
+```
+
+---
+
+## 🎯 Backend Apps Structure
+
+### Core Apps
+
+1. **account** - User authentication & management
+   - Custom user model with 4 roles
+   - JWT authentication
+   - Permission system
+   - User CRUD operations
+
+2. **elections** (PLURAL) - Election configuration
+   - Election model with 5 statuses
+   - Committee management
+   - Voting modes configuration
+   - ⚠️ **Note**: Renamed from `election` in Oct 2025
+
+3. **electors** - Voter database
+   - 7-part name parsing
+   - CSV import/export
+   - Advanced search (13 fields)
+   - Committee assignment
+
+4. **candidates** - Candidates & parties
+   - Party management
+   - Candidate registration
+   - Party affiliations
+   - **Note**: Separated from `voting` in Oct 2025
+
+5. **guarantees** - Guarantee collection
+   - Guarantee tracking
+   - Group management
+   - Status tracking (STRONG/MEDIUM/WEAK)
+   - Team dashboard
+
+6. **attendees** (PLURAL) - Attendance tracking
+   - Mark attendance
+   - Committee-based tracking
+   - Statistics and reporting
+   - ⚠️ **Note**: Renamed from `attendance` in Oct 2025
+
+7. **voting** - Voting operations
+   - Vote count entry
+   - Results aggregation
+   - Final results compilation
+   - Audit trail
+
+8. **reports** - Analytics & reporting
+   - Multi-level dashboards
+   - Coverage analysis
+   - Accuracy reports
+   - Performance metrics
+
+9. **utils** - Shared utilities
+   - `APIResponse` class (standardized responses)
+   - `StandardResponseMixin` (ViewSet mixin)
+   - Custom permissions
+   - Base models
+
+---
+
+## 🔑 Backend Standards (10/10 Score)
+
+### API Response Format
+
+**ALL backend responses use this format**:
+```python
+{
+  "status": "success|error",
+  "data": {},
+  "message": "...",
+  "errors": {},
+  "meta": {
+    "timestamp": "...",
+    "request_id": "..."
+  }
+}
+```
+
+### ViewSet Pattern
+
+**ALL ViewSets use `StandardResponseMixin`**:
+```python
+class MyViewSet(StandardResponseMixin, viewsets.ModelViewSet):
+    queryset = MyModel.objects.all()
+    serializer_class = MySerializer
+    permission_classes = [IsAuthenticated]
+```
+
+### URL Structure
+
+**RESTful with plural resource names**:
+- `/api/elections/` ✅
+- `/api/electors/` ✅
+- `/api/candidates/` ✅
+- `/api/attendees/` ✅
+- `/api/guarantees/` ✅
+
+---
+
+## 🎨 Frontend Patterns
+
+### API Integration
+
+**Service layer pattern**:
+```typescript
+class ElectionsService extends BaseService<Election> {
+  constructor() {
+    super('/elections');  // Plural endpoint
+  }
+  
+  async getCurrent(): Promise<APIResponse<Election>> {
+    const response = await apiClient.get(`${this.basePath}/current/`);
+    return response.data;
+  }
+}
+```
+
+### Component Pattern
+
+**Functional components with hooks**:
+```typescript
+export const MyComponent: React.FC<MyComponentProps> = ({
+  prop1,
+  prop2,
+}) => {
+  const { data, loading, error } = useApi(
+    () => service.getData()
+  );
+  
+  if (loading) return <LoadingSpinner />;
+  if (error) return <ErrorAlert error={error} />;
+  
+  return <div>{/* JSX */}</div>;
+};
+```
+
+### State Management
+
+**Context API + Custom Hooks**:
+```typescript
+const { user, login, logout } = useAuth();
+const { data, loading, error } = useApi(() => service.get());
+const { mutate, loading } = useMutation(service.create);
+```
+
+---
+
+## 🚨 Important: October 2025 API Changes
+
+### Backend (COMPLETE ✅)
+
+**Apps renamed to plural**:
+- `apps.election` → `apps.elections` ✅
+- `apps.attendance` → `apps.attendees` ✅
+- `apps.candidates` created (separated from voting) ✅
+
+**Endpoints updated**:
+- `/api/election/` → `/api/elections/` ✅
+- `/api/attendance/` → `/api/attendees/` ✅
+
+### Frontend (IN PROGRESS ⚠️)
+
+**Action Required**: Update frontend to use new endpoints
+
+**Migration Guide**: `docs/reference/MIGRATION-CHECKLIST.md`
+
+**Tasks**:
+- [ ] Update `/api/election/` → `/api/elections/`
+- [ ] Update `/api/attendance/` → `/api/attendees/`
+- [ ] Update imports and references
+- [ ] Test all API integrations
+
+---
+
+## 📊 Development Status
+
+### Backend Status
+
+| Phase | Status | Score |
+|-------|--------|-------|
+| **Phase 1**: Authentication | ✅ Complete | 10/10 |
+| **Phase 2**: Elections & Electors | ✅ Complete | 10/10 |
+| **Phase 3**: Guarantees | ✅ Complete | 10/10 |
+| **Phase 4**: Reports | ✅ Complete | 10/10 |
+| **Phase 5**: Voting | ✅ Complete | 10/10 |
+| **Refactoring**: Candidates | ✅ Complete | 10/10 |
+| **Refactoring**: Elections (plural) | ✅ Complete | 10/10 |
+| **Refactoring**: Attendees (plural) | ✅ Complete | 10/10 |
+| **Standardization** | ✅ Complete | **10/10** |
+
+**Overall Backend**: ✅ **PRODUCTION READY**
+
+### Frontend Status
+
+| Component | Status |
+|-----------|--------|
+| **Standards** | ✅ Established |
+| **Component Library** | ✅ Documented |
+| **API Integration** | ✅ Documented |
+| **Migration Tasks** | ⚠️ In Progress |
+
+---
+
+## 🎓 Development Workflow
+
+### For Backend Development
+
+1. Read: `docs/standards/BACKEND-STANDARDIZATION-GUIDE.md`
+2. Reference: `docs/reference/QUICK-REFERENCE.md`
+3. Check: `docs/backend/APP-STRUCTURE.md`
+4. Follow: `APIResponse` and `StandardResponseMixin` patterns
+
+### For Frontend Development
+
+1. Read: `docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md`
+2. Reference: `docs/reference/COMPONENT-LIBRARY.md`
+3. Check: `docs/standards/API-INTEGRATION-GUIDE.md`
+4. Follow: Service layer and custom hooks patterns
+
+### For Full Stack
+
+1. Read: `docs/standards/STANDARDS-SUMMARY.md`
+2. Read: `docs/standards/FRONTEND-BACKEND-INTEGRATION.md`
+3. Follow both backend and frontend standards
+4. Ensure type consistency across stack
+
+---
+
+## 🔒 Authentication & Permissions
+
+### User Roles (Hierarchical)
+
+1. **SUPER_ADMIN** - Full system access
+2. **ADMIN** - Operational management
+3. **SUPERVISOR** - Team oversight
+4. **STAFF** - Guarantee collection
+5. **OBSERVER** - Read-only access
+
+### Permission Classes
+
+- `IsAuthenticated` - Must be logged in
+- `IsAdminOrAbove` - Admin, Super Admin
+- `IsSupervisorOrAbove` - Supervisor, Admin, Super Admin
+- `IsAssignedToCommittee` - For committee-specific operations
+
+### JWT Authentication
+
+- Access token (short-lived)
+- Refresh token (long-lived)
+- Automatic refresh on frontend
+- Token-based API authorization
+
+---
+
+## 📝 Code Quality Standards
+
+### Backend Standards (10/10)
+
+✅ **API Response Format** - All use `APIResponse`  
+✅ **ViewSet Standards** - All use `StandardResponseMixin`  
+✅ **URL Structure** - RESTful, plural endpoints  
+✅ **Permissions** - Consistent permission system  
+✅ **Error Handling** - Standardized error responses  
+✅ **Audit Trail** - Automatic user tracking  
+✅ **Documentation** - Complete docstrings
+
+### Frontend Standards (Established)
+
+✅ **Component Patterns** - Functional + hooks  
+✅ **API Integration** - Service layer  
+✅ **State Management** - Context + custom hooks  
+✅ **TypeScript** - Full type safety  
+✅ **Form Handling** - React Hook Form + Yup  
+✅ **Error Boundaries** - Graceful error handling  
+✅ **Documentation** - JSDoc comments
+
+---
+
+## 🧪 Testing Standards
+
+### Backend Testing
+
+```python
+# Unit tests
+python manage.py test apps.elections
+
+# With coverage
+coverage run --source='.' manage.py test
+coverage report
+```
+
+### Frontend Testing
+
+```bash
+# Unit tests
+npm test
+
+# With coverage
+npm test -- --coverage
+
+# Watch mode
+npm test -- --watch
+```
+
+---
+
+## 🚀 Running the Project
+
+### Backend
+
+```bash
+cd backend
+.\venv\Scripts\activate  # Windows
+source venv/bin/activate # Linux/Mac
+python manage.py runserver
+# Access: http://localhost:8000
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+# Access: http://localhost:3000
+```
+
+---
+
+## 🔗 API Endpoints Reference
+
+### Authentication
+- `POST /api/auth/login/` - User login
+- `POST /api/auth/logout/` - User logout
+- `POST /api/auth/refresh/` - Refresh token
+
+### Elections (PLURAL)
+- `GET /api/elections/` - List elections
+- `GET /api/elections/current/` - Current election
+- `GET /api/elections/{id}/` - Election detail
+- `GET /api/elections/committees/` - List committees
+
+### Electors
+- `GET /api/electors/` - List electors
+- `GET /api/electors/search/` - Search electors
+- `POST /api/electors/import/` - Import CSV
+- `GET /api/electors/export/` - Export CSV
+
+### Candidates
+- `GET /api/candidates/` - List candidates
+- `GET /api/candidates/parties/` - List parties
+- `POST /api/candidates/` - Create candidate
+
+### Attendees (PLURAL)
+- `GET /api/attendees/` - List attendance
+- `POST /api/attendees/mark_attendance/` - Mark attendance
+- `GET /api/attendees/statistics/{code}/` - Committee stats
+
+### Guarantees
+- `GET /api/guarantees/` - List guarantees
+- `POST /api/guarantees/` - Create guarantee
+- `GET /api/guarantees/statistics/` - Statistics
+
+### Voting
+- `POST /api/voting/vote-counts/` - Enter votes
+- `GET /api/voting/results/` - Get results
+
+### Reports
+- `GET /api/reports/dashboard/personal/` - Personal dashboard
+- `GET /api/reports/dashboard/supervisor/` - Supervisor dashboard
+- `GET /api/reports/dashboard/admin/` - Admin dashboard
+
+---
+
+## 📚 Learning Resources
+
+### For New Developers
+
+**Day 1-2**: 
+- `docs/getting-started/00-QUICK-START.md`
+- `docs/getting-started/01-PROJECT-OVERVIEW.md`
+- `docs/getting-started/02-INSTALLATION.md`
+
+**Day 3-5**:
+- Backend: `docs/standards/BACKEND-STANDARDIZATION-GUIDE.md`
+- Frontend: `docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md`
+
+**Week 2**:
+- `docs/standards/STANDARDS-SUMMARY.md`
+- `docs/backend/APP-STRUCTURE.md`
+- Start small tasks
+
+### For Active Developers
+
+**Daily References**:
+- Backend: `docs/reference/QUICK-REFERENCE.md`
+- Frontend: `docs/reference/COMPONENT-LIBRARY.md`
+- Commands: `docs/reference/03-COMMANDS.md`
+
+**Navigation**: `docs/INDEX.md` for everything
+
+---
+
+## 🎯 Current Priorities
+
+### High Priority ⚠️
+
+1. **Frontend API Migration** (In Progress)
+   - Update endpoints to plural format
+   - Test all integrations
+   - See: `docs/reference/MIGRATION-CHECKLIST.md`
+
+### Medium Priority
+
+1. **Frontend Development**
+   - Follow established patterns
+   - Use component library
+   - Implement features per standards
+
+### Low Priority
+
+1. **Documentation**
+   - Keep updated as code changes
+   - Add examples as needed
+   - Archive completed work
+
+---
+
+## 🏆 Project Achievements
+
+### Backend
+- ✅ **5 Complete Phases** - All features implemented
+- ✅ **10/10 Standardization** - Fully audited
+- ✅ **3 Major Refactorings** - Clean architecture
+- ✅ **Complete API** - RESTful endpoints
+- ✅ **Production Ready** - Tested and documented
+
+### Documentation
+- ✅ **8,000+ Lines** - Comprehensive coverage
+- ✅ **80+ Documents** - Complete system
+- ✅ **Single Source** - All in `docs/`
+- ✅ **Complete Index** - Easy navigation
+- ✅ **Preserved History** - 63 files archived
+
+---
+
+## 🔧 Common Commands
+
+### Backend
+
+```bash
+# Run server
+python manage.py runserver
+
+# Make migrations
+python manage.py makemigrations
+
+# Apply migrations
+python manage.py migrate
+
+# Create superuser
+python manage.py createsuperuser
+
+# Run tests
+python manage.py test
+```
+
+### Frontend
+
+```bash
+# Install dependencies
+npm install
+
+# Run dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run tests
+npm test
+
+# Lint code
+npm run lint
+```
+
+---
+
+## 📞 Getting Help
+
+### Documentation
+- **Start**: `docs/INDEX.md`
+- **Backend**: `docs/standards/BACKEND-STANDARDIZATION-GUIDE.md`
+- **Frontend**: `docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md`
+- **API**: `docs/standards/API-INTEGRATION-GUIDE.md`
+
+### Common Issues
+- Check relevant standardization guide
+- Search `docs/INDEX.md`
+- Ask in team chat
+- Create GitHub issue
+
+---
+
+## ✅ Before You Start
+
+**Read these first**:
+1. [`docs/INDEX.md`](../../docs/INDEX.md) - Complete navigation
+2. [`docs/README.md`](../../docs/README.md) - Documentation hub
+3. Your role's standardization guide
+4. Relevant quick reference guide
+
+---
+
+**Last Updated**: October 27, 2025  
+**Maintained By**: Development Team  
+**Status**: ✅ **Backend Production Ready, Frontend In Progress**
+
+---
+
+**Remember: Always start with `docs/INDEX.md` for navigation!** ⭐

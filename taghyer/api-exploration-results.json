@@ -1,0 +1,58 @@
+[
+  {
+    "endpoint": "Get Details",
+    "status": "failed",
+    "code": 500
+  },
+  {
+    "endpoint": "Get Record by Internal Reference",
+    "status": "failed",
+    "code": 404
+  },
+  {
+    "endpoint": "Search by Name",
+    "status": "success",
+    "data": {
+      "status": "login",
+      "data": [
+        "<div id='4' class='student dob__0'><span class='internal_reference d-none' id='82130'></span><div class='noteditable'><p id='_محمد_4' class='lead text-center public_elections'><span class='text-info'>محمد</span> نايف <span class='text-info'>محمد</span> راشد عيد اباالدعيات</p><input id='4' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='4'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i4' ></div><hr></div>",
+        "<div id='27' class='student dob__0'><span class='internal_reference d-none' id='80343'></span><div class='noteditable'><p id='_محمد_27' class='lead text-center public_elections'><span class='text-info'>محمد</span> عبدالله جاسم ابل</p><input id='27' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='27'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i27' ></div><hr></div>",
+        "<div id='53' class='student dob__0'><span class='internal_reference d-none' id='83715'></span><div class='noteditable'><p id='_محمد_53' class='lead text-center public_elections'><span class='text-info'>محمد</span> مجبل عبدالله ابورميه</p><input id='53' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='53'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i53' ></div><hr></div>",
+        "<div id='64' class='student dob__0'><span class='internal_reference d-none' id='81270'></span><div class='noteditable'><p id='_محمد_64' class='lead text-center public_elections'><span class='text-info'>محمد</span> خليفه احمد ابوناشي</p><input id='64' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='64'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i64' ></div><hr></div>",
+        "<div id='67' class='student dob__0'><span class='internal_reference d-none' id='65218'></span><div class='noteditable'><p id='_محمد_67' class='lead text-center public_elections'><span class='text-info'>محمد</span> حبيب <span class='text-info'>محمد</span> اتش</p><input id='67' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='67'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i67' ></div><hr></div>",
+        "<div id='77' class='student dob__0'><span class='internal_reference d-none' id='64885'></span><div class='noteditable'><p id='_محمد_77' class='lead text-center public_elections'><span class='text-info'>محمد</span> عبدالله حسين <span class='text-info'>محمد</span> احمد</p><input id='77' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='77'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i77' ></div><hr></div>",
+        "<div id='83' class='student dob__0'><span class='internal_reference d-none' id='83416'></span><div class='noteditable'><p id='_محمد_83' class='lead text-center public_elections'><span class='text-info'>محمد</span> عبدالمحسن عباس احمد</p><input id='83' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='83'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i83' ></div><hr></div>",
+        "<div id='90' class='student dob__0'><span class='internal_reference d-none' id='85332'></span><div class='noteditable'><p id='_محمد_90' class='lead text-center public_elections'><span class='text-info'>محمد</span> عبدالواحد عبدالله احمد </p><input id='90' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='90'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i90' ></div><hr></div>",
+        "<div id='111' class='student dob__0'><span class='internal_reference d-none' id='66975'></span><div class='noteditable'><p id='_محمد_111' class='lead text-center public_elections'><span class='text-info'>محمد</span> احمد عبدالله اسحاق</p><input id='111' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='111'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i111' ></div><hr></div>",
+        "<div id='122' class='student dob__0'><span class='internal_reference d-none' id='82541'></span><div class='noteditable'><p id='_محمد_122' class='lead text-center public_elections'><span class='text-info'>محمد</span> عدنان قمبر اسماعيل</p><input id='122' class='public_elections d-none'  type='text' name='fullname'></div><div class='others-data row'></div><div class='actions-div' ><a href='#' class='btn btn-info search_details_link' id='122'> ( <span class='details'> 5</span> نقاط ) التفاصيل  </a></div><div id='i122' ></div><hr></div>"
+      ],
+      "message": "<h3 style='position: absolute; top: 15px; right: 40px;'>( 897 ) تطابق </h3>",
+      "search_details": {
+        "firstname": "محمد",
+        "secondname": "",
+        "thirdname": "",
+        "forthname": "",
+        "familyname": ""
+      },
+      "sorting": "1",
+      "query2": "SELECT * FROM public_elections WHERE 1 AND normalized_firstname LIKE '%محمد%' AND  registeration_status LIKE '%%' AND  gender LIKE '%%' AND  (  dob LIKE '%%'  )  LIMIT 0, 10",
+      "count": 897,
+      "notify": "<div class='alert alert-success'>تم خصم 5 نقاط للبحث</div>"
+    }
+  },
+  {
+    "endpoint": "Get Statistics",
+    "status": "failed",
+    "code": 404
+  },
+  {
+    "endpoint": "Get Elections List",
+    "status": "failed",
+    "code": 404
+  },
+  {
+    "endpoint": "User Info",
+    "status": "failed",
+    "code": 404
+  }
+]

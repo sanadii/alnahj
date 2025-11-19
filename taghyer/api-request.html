@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Request - altaqyeer.q8votes.com</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 API Request Tool</h1>
+        <p><strong>Endpoint:</strong> https://altaqyeer.q8votes.com/search_request.php</p>
+        
+        <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+            <strong>⚠️ CORS Error:</strong> This browser-based tool won't work due to Cross-Origin Resource Sharing restrictions.
+            <br><br>
+            <strong>✅ Use instead:</strong>
+            <ul style="margin: 10px 0 0 20px;">
+                <li><code>node api-request.js</code> (recommended)</li>
+                <li><code>python api-request.py</code></li>
+            </ul>
+        </div>
+        
+        <button id="makeRequest" onclick="makeRequest()" disabled style="opacity: 0.5; cursor: not-allowed;">🚀 Make Request (CORS Blocked)</button>
+        
+        <div id="status"></div>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        async function makeRequest() {
+            const url = 'https://altaqyeer.q8votes.com/search_request.php';
+            const statusDiv = document.getElementById('status');
+            const outputDiv = document.getElementById('output');
+            const button = document.getElementById('makeRequest');
+            
+            // Payload
+            const payload = {
+                sorting: '1',
+                firstname: '',
+                secondname: '',
+                thirdname: '',
+                forthname: '',
+                familyname: '',
+                fullname: '',
+                internal_reference_from: '',
+                internal_reference_to: '',
+                employer: '',
+                team_icon: '',
+                recordPerTime: '100',
+                start_from: '0',
+                search_public_elections: '30'
+            };
+
+            // Session ID
+            const sessionId = '857a8eb3c95eb4dbfe07918c82c96ef4';
+
+            try {
+                button.disabled = true;
+                statusDiv.className = 'status loading';
+                statusDiv.textContent = '⏳ Making request...';
+                outputDiv.textContent = 'Request sent...\n\nURL: ' + url + '\n\nPayload:\n' + JSON.stringify(payload, null, 2);
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Cookie': `PHPSESSID=${sessionId}`,
+                        'Accept': '*/*'
+                    },
+                    body: new URLSearchParams(payload).toString()
+                });
+
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType?.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+
+                // Display results
+                let output = '';
+                output += '=== REQUEST DETAILS ===\n';
+                output += `URL: ${url}\n`;
+                output += `Method: POST\n`;
+                output += `Session ID: ${sessionId}\n\n`;
+                
+                output += '=== RESPONSE ===\n';
+                output += `Status: ${response.status} ${response.statusText}\n`;
+                output += `Content-Type: ${contentType}\n\n`;
+                
+                output += '=== RESPONSE DATA ===\n';
+                if (typeof data === 'object') {
+                    output += JSON.stringify(data, null, 2);
+                } else {
+                    output += data;
+                }
+
+                outputDiv.textContent = output;
+                statusDiv.className = 'status success';
+                statusDiv.textContent = '✓ Request completed successfully!';
+                
+                console.log('Response:', data);
+
+            } catch (error) {
+                outputDiv.textContent = 'Error: ' + error.message + '\n\n' + error.stack;
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '✗ Request failed: ' + error.message;
+                console.error('Error:', error);
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        // Auto-execute on load (optional)
+        // window.onload = makeRequest;
+    </script>
+</body>
+</html>
+

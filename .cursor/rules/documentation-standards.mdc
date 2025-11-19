@@ -1,0 +1,446 @@
+# Documentation Standards & Structure
+
+**Election Management System - Complete Documentation Rules**
+
+**Last Updated**: October 27, 2025  
+**Status**: ✅ Complete & Organized
+
+---
+
+## 📚 Documentation Location
+
+**ALL documentation is now centralized in `docs/`**
+
+### Main Documentation Hub
+
+**Primary Entry Point**: [`docs/INDEX.md`](../../docs/INDEX.md) ⭐
+
+This is your complete navigation hub for ALL documentation.
+
+---
+
+## 🗂️ Documentation Structure (Current)
+
+```
+docs/
+├── INDEX.md ⭐                          # Main navigation hub
+├── README.md                            # Documentation overview
+│
+├── getting-started/     (3 files)       # New developer onboarding
+│   ├── 00-QUICK-START.md
+│   ├── 01-PROJECT-OVERVIEW.md
+│   └── 02-INSTALLATION.md
+│
+├── standards/           (8 files)       # Development standards
+│   ├── STANDARDS-SUMMARY.md
+│   ├── BACKEND-STANDARDIZATION-GUIDE.md  (894 lines)
+│   ├── FRONTEND-STANDARDIZATION-GUIDE.md (1,296 lines)
+│   ├── API-INTEGRATION-GUIDE.md         (646 lines)
+│   ├── FRONTEND-BACKEND-INTEGRATION.md  (612 lines)
+│   ├── STANDARDIZATION-AUDIT-REPORT.md
+│   ├── STANDARDIZATION-STATUS.md
+│   └── REVIEW-SUMMARY.md
+│
+├── backend/             (3 files)       # Backend architecture
+│   ├── APP-STRUCTURE.md
+│   ├── README-BACKEND-DOCS.md
+│   └── README-PURPOSE.md
+│
+├── reference/           (4 files)       # Quick references
+│   ├── QUICK-REFERENCE.md
+│   ├── COMPONENT-LIBRARY.md
+│   ├── MIGRATION-CHECKLIST.md
+│   └── 03-COMMANDS.md
+│
+├── architecture/                        # System architecture
+├── project/                            # Project management
+├── active-plans/                       # Active development
+├── core/                              # Core documentation
+│
+└── archive/            (63 files)      # Historical documentation
+    ├── feature-implementations/        # Completed features
+    ├── backend-phases/                # Backend development history
+    ├── reorganization/                # Documentation reorganization
+    ├── backend-docs-old/              # Original backend/docs
+    └── old-structure/                 # Previous structure
+```
+
+---
+
+## ✅ Documentation Rules (MANDATORY)
+
+### Rule 1: Single Source of Truth
+
+**ALL documentation goes in `docs/`**
+
+❌ **NEVER** create documentation in:
+- `backend/docs/` (deprecated - now archived)
+- Project root (except README.md and CHANGELOG.md)
+- Random locations
+
+✅ **ALWAYS** use:
+- `docs/` directory
+- Appropriate subdirectory
+- Update `docs/INDEX.md`
+
+### Rule 2: Use Existing Structure
+
+**Before creating new documentation:**
+
+1. ✅ Check `docs/INDEX.md` - Does it already exist?
+2. ✅ Read `docs/DOCUMENTATION-PLACEMENT-GUIDE.md` - Where does it belong?
+3. ✅ Use appropriate category:
+   - **Standards**: Development standards, patterns, best practices
+   - **Getting Started**: Onboarding, setup, quick start
+   - **Backend**: Backend architecture, Django apps
+   - **Reference**: Quick references, component catalogs
+   - **Archive**: Completed/historical documentation
+
+4. ✅ Update `docs/INDEX.md` after creating
+
+### Rule 3: Follow Standards
+
+**Development Standards (REQUIRED READING)**:
+
+#### Backend Development
+- **[Backend Standardization Guide](../../docs/standards/BACKEND-STANDARDIZATION-GUIDE.md)** (894 lines)
+  - API Response format (APIResponse class)
+  - ViewSet patterns (StandardResponseMixin)
+  - URL structure (RESTful, plural endpoints)
+  - Serializers, permissions, error handling
+  - **Score: 10/10** ✅
+
+#### Frontend Development
+- **[Frontend Standardization Guide](../../docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md)** (1,296 lines)
+  - Component patterns (functional + hooks)
+  - API integration (service layer)
+  - State management (Context + hooks)
+  - TypeScript standards
+  - Form handling, error boundaries
+
+#### API Integration
+- **[API Integration Guide](../../docs/standards/API-INTEGRATION-GUIDE.md)** (646 lines)
+  - Service layer pattern
+  - Custom hooks (useApi, useMutation)
+  - Error handling
+  - Token management
+
+#### Full Stack
+- **[Full Stack Integration](../../docs/standards/FRONTEND-BACKEND-INTEGRATION.md)** (612 lines)
+  - Request/response flow
+  - Authentication patterns
+  - Data model mapping
+  - CRUD operations
+
+### Rule 4: Archive Completed Work
+
+**When work is complete:**
+
+1. ✅ Create detailed implementation summary
+2. ✅ Move to `docs/archive/` appropriate category:
+   - `feature-implementations/` - Completed features
+   - `backend-phases/` - Development phases
+   - `reorganization/` - Process documentation
+3. ✅ Update archive README.md
+4. ✅ Keep active docs lean
+
+**Examples**: See `docs/archive/feature-implementations/`
+
+---
+
+## 📝 Documentation Types & Locations
+
+### Standards Documentation → `docs/standards/`
+
+**When to use**: Development standards, coding patterns, best practices
+
+**Examples**:
+- API standards
+- Code review guidelines
+- Design patterns
+- Architecture decisions
+
+### Getting Started → `docs/getting-started/`
+
+**When to use**: Onboarding, setup, quick start guides
+
+**Examples**:
+- Quick start (5 minutes)
+- Installation guide
+- Project overview
+
+### Backend Specific → `docs/backend/`
+
+**When to use**: Backend architecture, Django apps structure
+
+**Examples**:
+- App structure
+- Database schema
+- Backend architecture
+
+### Reference → `docs/reference/`
+
+**When to use**: Quick reference guides, cheat sheets, catalogs
+
+**Examples**:
+- Quick reference (code patterns)
+- Component library
+- Commands reference
+- Migration checklists
+
+### Archive → `docs/archive/`
+
+**When to use**: Completed features, historical documentation
+
+**Examples**:
+- Feature implementation summaries
+- Phase completion docs
+- Reorganization documentation
+
+---
+
+## 🎯 Quick Decision Tree
+
+### "Where do I document this?"
+
+```
+Is it a development standard?
+  → docs/standards/
+
+Is it for onboarding new developers?
+  → docs/getting-started/
+
+Is it backend architecture?
+  → docs/backend/
+
+Is it a quick reference or catalog?
+  → docs/reference/
+
+Is it completed work?
+  → docs/archive/[category]/
+
+Is it project management?
+  → docs/project/
+
+Is it active development plan?
+  → docs/active-plans/
+
+Still unsure?
+  → Check docs/INDEX.md or ask team
+```
+
+---
+
+## ✍️ Documentation Best Practices
+
+### Writing Style
+
+✅ **DO**:
+- Use clear, concise language
+- Include code examples
+- Provide usage examples
+- Add "Last Updated" date
+- Cross-reference related docs
+- Use proper markdown formatting
+- Include table of contents for long docs
+
+❌ **DON'T**:
+- Use jargon without explanation
+- Write without examples
+- Create orphaned docs (not linked)
+- Skip updating INDEX.md
+- Duplicate existing documentation
+
+### Code Examples
+
+**Always include**:
+- Language specification in code blocks
+- Comments explaining complex logic
+- Working, tested examples
+- TypeScript types for frontend
+- Imports when relevant
+
+**Example**:
+```typescript
+// Good ✅
+import { electionsService } from '@/api/services/elections.service';
+
+const { data, loading, error } = useApi(
+  () => electionsService.getCurrent()
+);
+```
+
+### File Naming
+
+✅ **USE**:
+- UPPERCASE-WITH-DASHES.md (for major guides)
+- kebab-case.md (for specific topics)
+- Numbers for ordered sequences (00-, 01-, 02-)
+
+❌ **AVOID**:
+- spaces in filenames
+- special characters
+- unclear abbreviations
+
+---
+
+## 🔍 Before Creating Documentation
+
+**MANDATORY Checklist**:
+
+- [ ] Checked `docs/INDEX.md` - does similar doc exist?
+- [ ] Read `docs/DOCUMENTATION-PLACEMENT-GUIDE.md`
+- [ ] Determined correct category
+- [ ] Chosen appropriate filename
+- [ ] Ready to update INDEX.md
+- [ ] Have code examples prepared
+- [ ] Reviewed existing patterns in that category
+
+**If ALL boxes checked → Proceed**  
+**If ANY box unchecked → Complete it first**
+
+---
+
+## 📊 Documentation Quality Standards
+
+### Minimum Requirements
+
+**Every documentation file must have**:
+1. ✅ Clear title
+2. ✅ Brief overview/summary
+3. ✅ Last updated date
+4. ✅ Code examples (if applicable)
+5. ✅ Links to related documentation
+6. ✅ Proper markdown formatting
+
+### High-Quality Documentation Includes
+
+- Table of contents (for >200 lines)
+- Visual diagrams (when helpful)
+- Usage examples
+- Common issues section
+- Best practices
+- Anti-patterns (what NOT to do)
+- Testing guidance
+
+---
+
+## 🎓 Learning Resources
+
+### For New Developers
+
+**Start here**:
+1. [`docs/INDEX.md`](../../docs/INDEX.md) - Complete navigation
+2. [`docs/README.md`](../../docs/README.md) - Documentation hub
+3. [`docs/getting-started/00-QUICK-START.md`](../../docs/getting-started/00-QUICK-START.md) - Quick start
+4. Choose your path:
+   - Backend: `docs/standards/BACKEND-STANDARDIZATION-GUIDE.md`
+   - Frontend: `docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md`
+   - Full Stack: `docs/standards/STANDARDS-SUMMARY.md`
+
+### For Active Developers
+
+**Daily references**:
+- Backend patterns: `docs/reference/QUICK-REFERENCE.md`
+- Frontend components: `docs/reference/COMPONENT-LIBRARY.md`
+- Commands: `docs/reference/03-COMMANDS.md`
+
+### For Code Reviewers
+
+**Review against**:
+- Backend standards: `docs/standards/BACKEND-STANDARDIZATION-GUIDE.md`
+- Frontend standards: `docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md`
+- Audit report: `docs/standards/STANDARDIZATION-AUDIT-REPORT.md`
+
+---
+
+## 🚨 Important: API Endpoint Updates (October 2025)
+
+### Backend Changes (COMPLETE)
+
+**Endpoints have been pluralized**:
+- ✅ `/api/election/` → `/api/elections/`
+- ✅ `/api/attendance/` → `/api/attendees/`
+
+### Frontend Migration (IN PROGRESS)
+
+**Action required**: Update frontend to use new endpoints
+
+**See**: `docs/reference/MIGRATION-CHECKLIST.md`
+
+---
+
+## 🔗 Quick Links
+
+| Need | Link |
+|------|------|
+| **Navigate All Docs** | [`docs/INDEX.md`](../../docs/INDEX.md) |
+| **Backend Standards** | [`docs/standards/BACKEND-STANDARDIZATION-GUIDE.md`](../../docs/standards/BACKEND-STANDARDIZATION-GUIDE.md) |
+| **Frontend Standards** | [`docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md`](../../docs/standards/FRONTEND-STANDARDIZATION-GUIDE.md) |
+| **API Integration** | [`docs/standards/API-INTEGRATION-GUIDE.md`](../../docs/standards/API-INTEGRATION-GUIDE.md) |
+| **Quick Reference** | [`docs/reference/QUICK-REFERENCE.md`](../../docs/reference/QUICK-REFERENCE.md) |
+| **Component Library** | [`docs/reference/COMPONENT-LIBRARY.md`](../../docs/reference/COMPONENT-LIBRARY.md) |
+| **Archive** | [`docs/archive/README.md`](../../docs/archive/README.md) |
+
+---
+
+## ✅ Documentation Compliance
+
+### For AI Assistants
+
+When helping with this project:
+
+1. ✅ **Always reference** current documentation in `docs/`
+2. ✅ **Never reference** deprecated `backend/docs/` location
+3. ✅ **Follow standards** from standardization guides
+4. ✅ **Use patterns** from quick reference guides
+5. ✅ **Check INDEX.md** before suggesting new documentation
+6. ✅ **Archive completed** work appropriately
+7. ✅ **Update INDEX.md** when creating new docs
+
+### For Developers
+
+Before committing code:
+
+- [ ] Code follows relevant standardization guide
+- [ ] New features documented appropriately
+- [ ] API changes documented
+- [ ] Tests documented
+- [ ] README updated if needed
+- [ ] INDEX.md updated if docs added
+
+---
+
+## 📈 Documentation Statistics
+
+| Metric | Count | Status |
+|--------|-------|--------|
+| **Total Documentation** | 80+ files | ✅ |
+| **Active Documentation** | 24 files | ✅ Organized |
+| **Standards Guides** | 8 files | ✅ Complete |
+| **Archived Documentation** | 63 files | ✅ Preserved |
+| **Backend Score** | 10/10 | ✅ Audited |
+| **Frontend Standards** | Complete | ✅ Established |
+| **Total Lines** | 12,000+ | ✅ Comprehensive |
+
+---
+
+## 🎉 Success Metrics
+
+**We have achieved**:
+- ✅ **Single source of truth** - All docs in `docs/`
+- ✅ **Complete navigation** - INDEX.md covers everything
+- ✅ **Logical organization** - By purpose and type
+- ✅ **Comprehensive standards** - Backend 10/10, Frontend complete
+- ✅ **Preserved history** - 63 files archived
+- ✅ **Professional quality** - Enterprise-grade documentation
+
+---
+
+**Last Updated**: October 27, 2025  
+**Maintained By**: Development Team  
+**Status**: ✅ **Production Ready**
+
+---
+
+**Remember: Start with `docs/INDEX.md` for all navigation!** ⭐

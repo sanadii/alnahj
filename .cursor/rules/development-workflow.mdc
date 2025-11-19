@@ -1,0 +1,433 @@
+---
+alwaysApply: true
+---
+# Development Workflow & Quality Standards
+
+**Universal workflow for any project - Adapt to your tech stack**
+
+## Core Workflow
+
+### 1. Planning Phase
+**Before starting any feature:**
+
+#### Step 1: Review Documentation (15-20 min)
+- [ ] Read relevant module/feature documentation
+- [ ] Check architecture/design documents
+- [ ] Review existing patterns and templates
+- [ ] Identify dependencies and affected areas
+
+#### Step 2: Analyze Request
+- **Complexity**: Simple, Moderate, Complex?
+- **Scope**: Frontend, Backend, Full-stack, Infrastructure?
+- **Dependencies**: What modules/services affected?
+- **Timeline**: Realistic estimate?
+- **Risks**: Technical challenges, unknowns?
+
+#### Step 3: Create Plan (for complex tasks)
+- Break down into phases
+- Identify file changes needed
+- Reference existing patterns
+- Create detailed checklist
+- Estimate duration per phase
+- Document plan in appropriate location
+
+### 2. Implementation Phase
+
+#### Follow Your Tech Stack Conventions
+1. **Backend/API**:
+   - Data models/schemas
+   - Business logic
+   - API endpoints
+   - Data validation
+   - Tests
+
+2. **Frontend/Client**:
+   - Type definitions
+   - API integration layer
+   - State management
+   - UI components
+   - Tests
+
+3. **Integration**:
+   - Routes/navigation
+   - Error handling
+   - Loading states
+   - End-to-end testing
+
+### 3. Quality Assurance Phase
+
+#### Pre-Commit Checklist (CRITICAL)
+
+##### Linting (MANDATORY)
+```bash
+# Run your project's linter
+npm run lint / yarn lint / cargo clippy / go vet / etc.
+
+# Auto-fix what's possible
+npm run lint -- --fix / cargo fix / go fmt / etc.
+```
+
+**Zero errors/warnings required**
+
+##### Code Quality
+- [ ] No unused imports
+- [ ] No unused variables
+- [ ] No debug print statements (console.log, println!, etc.)
+- [ ] Proper types/interfaces (TypeScript, Rust, Go, etc.)
+- [ ] Proper error handling
+- [ ] Loading states implemented
+- [ ] Meaningful variable/function names
+- [ ] No magic numbers (use constants)
+
+##### Testing
+- [ ] Manual testing completed
+- [ ] Core functionality works
+- [ ] Edge cases handled
+- [ ] Responsive/cross-platform testing (if applicable)
+- [ ] Browser console/logs checked for errors
+- [ ] Performance acceptable
+
+##### Pattern Compliance
+- [ ] Follows project conventions
+- [ ] Follows established patterns
+- [ ] API contracts respected
+- [ ] Security best practices applied
+- [ ] Accessibility considered (if UI)
+
+### 4. Documentation Phase
+
+#### Update Documentation
+- [ ] Implementation details documented
+- [ ] API/interface changes documented
+- [ ] Architecture docs updated (if structural changes)
+- [ ] TODO lists updated
+- [ ] Comments added for complex logic
+
+#### Create Completion Summary (for major work)
+```markdown
+# {Feature} Implementation Complete
+
+**Completed**: {Date}
+**Status**: Complete/Partial
+
+## Summary
+Brief description of what was accomplished
+
+## Files Changed
+- List of modified/created files
+- Key changes per file
+
+## Features Implemented
+- Feature 1
+- Feature 2
+
+## Testing
+What was tested and results
+
+## Known Issues
+Technical debt or future improvements
+
+## Documentation Updated
+- [ ] Technical docs
+- [ ] API docs
+- [ ] User docs (if applicable)
+```
+
+## Quality Gates
+
+### Gate 1: Pattern Compliance
+✅ **Follow Project Standards**:
+- Naming conventions
+- File structure
+- Code organization
+- Error handling patterns
+- State management patterns (if applicable)
+- API design patterns
+- Security patterns
+
+✅ **Best Practices**:
+- DRY (Don't Repeat Yourself)
+- SOLID principles
+- Proper abstraction levels
+- Clear separation of concerns
+
+### Gate 2: Code Quality
+✅ **Zero Linting Errors**:
+```bash
+# Must pass with 0 errors, 0 warnings
+{your_lint_command}
+```
+
+✅ **No Technical Debt**:
+- No unused code
+- No commented-out code
+- No TODO/FIXME comments (add to TODO list instead)
+- Proper error handling
+- Meaningful names
+- Clear code structure
+
+### Gate 3: Testing
+✅ **Manual Testing**:
+- Complete workflow tested
+- Edge cases covered
+- Error states handled
+- Performance acceptable
+
+✅ **Automated Testing** (when applicable):
+- Unit tests pass
+- Integration tests pass
+- E2E tests pass
+- Security tests pass
+
+### Gate 4: Documentation
+✅ **Updated**:
+- Technical documentation reflects changes
+- API/interface docs updated
+- Architecture docs updated (if needed)
+- Comments added for complex logic
+
+## Timeline Estimates
+
+### Simple Task (< 1 day)
+- Single file changes
+- Minor updates
+- Bug fixes
+
+### Moderate Task (1-3 days)
+- New component/module
+- Single API/endpoint
+- State additions
+
+### Complex Task (1-2 weeks)
+- New feature module
+- Multiple integrations
+- Complex logic
+
+### Major Feature (2-4 weeks)
+- Multiple modules
+- Complex architecture
+- Extensive integration
+
+### Large Initiative (1-3 months)
+- System-wide changes
+- Major refactoring
+- Platform features
+
+**Add 20-30% buffer for unknowns**
+
+## Communication Standards
+
+### Response Format
+
+#### For Planning Requests
+1. Analysis of current state
+2. Clear implementation plan with phases
+3. Specific file paths and changes
+4. Timeline estimates
+5. Reference documentation
+6. Risk assessment
+7. Next steps
+
+#### For Review Requests
+1. Compliance check (patterns, conventions)
+2. Quality assessment
+3. Documentation verification
+4. Recommendations
+5. Priority issues first
+
+#### For Questions
+1. Reference documentation first
+2. Provide specific examples
+3. Link to relevant guides
+4. Suggest next steps
+
+#### For Complex Tasks
+1. Executive summary (what, why, how)
+2. Detailed phase-by-phase breakdown
+3. Specific file paths and code examples
+4. Timeline with milestones
+5. Risk assessment
+6. Success criteria
+7. Next steps by area
+
+### Code Examples
+- Always provide concrete code examples
+- Reference existing implementations
+- Show "before" and "after" for changes
+- Include types/interfaces when relevant
+- Show file paths
+
+### Next Steps Template
+**ALWAYS provide at end of responses:**
+
+```markdown
+## 🎯 Recommended Next Steps
+
+### Backend/API
+- [ ] Specific task with file path
+- [ ] Database/migration tasks
+- [ ] Testing endpoints
+
+### Frontend/Client
+- [ ] Specific component changes
+- [ ] State updates needed
+- [ ] UI/UX polish
+
+### Testing
+- [ ] Unit tests to write
+- [ ] Integration tests needed
+- [ ] Manual testing steps
+
+### Documentation
+- [ ] Docs to update
+- [ ] API docs to complete
+- [ ] Architecture docs to review
+```
+
+## Risk Management
+
+### Identify Risks Early
+- Technical dependencies
+- Unknown complexities
+- Resource constraints
+- Integration challenges
+- Performance implications
+- Security concerns
+
+### Mitigation Strategies
+- Prototype complex features
+- Break into smaller phases
+- Regular testing checkpoints
+- Documentation as you go
+- Code reviews
+- Incremental deployments
+
+### Rollback Plans
+- Keep changes reversible
+- Feature flags for major changes
+- Version control best practices
+- Backup data before migrations
+- Documented rollback procedures
+
+## Best Practices Summary
+
+### General
+1. ✅ **Documentation First** - Read before coding
+2. ✅ **Plan Before Implementing** - Break down complex tasks
+3. ✅ **Follow Patterns** - Use established conventions
+4. ✅ **Quality Focus** - Zero linting errors
+5. ✅ **Test Thoroughly** - Manual + automated
+6. ✅ **Document Everything** - Keep docs in sync
+7. ✅ **Security First** - Consider security implications
+8. ✅ **Performance Aware** - Monitor performance impact
+
+### Code Quality
+1. ✅ **Type Safety** - Use strong typing when available
+2. ✅ **Error Handling** - Graceful error handling
+3. ✅ **Code Reuse** - DRY principle
+4. ✅ **Clear Naming** - Self-documenting code
+5. ✅ **Small Functions** - Single responsibility
+6. ✅ **Comments** - When "why" isn't obvious
+
+### Integration
+1. ✅ **API Contracts** - Clear, versioned interfaces
+2. ✅ **Error States** - Handle all error cases
+3. ✅ **Loading States** - User feedback during operations
+4. ✅ **Validation** - Both client and server
+5. ✅ **Testing** - Integration and E2E tests
+
+## Emergency Procedures
+
+### If Documentation is Misplaced
+```bash
+# 1. Alert user
+echo "⚠️ Found documentation in wrong location!"
+
+# 2. Move to correct location
+# Use your OS's move command
+mv "WRONG-LOCATION.md" "docs/correct/location/FILE.md"
+
+# 3. Update references
+# Search for broken links
+grep -r "WRONG-LOCATION.md" docs/
+
+# 4. Verify structure
+ls docs/
+```
+
+### If Linting Fails
+```bash
+# 1. Run linter
+{your_lint_command}
+
+# 2. Auto-fix what's possible
+{your_autofix_command}
+
+# 3. Manual fixes for remainder
+# Review errors carefully
+# Fix one category at a time
+
+# 4. Verify
+{your_lint_command}  # Must show 0 errors, 0 warnings
+```
+
+### If Tests Fail
+1. Read error messages carefully
+2. Check recent changes
+3. Verify contracts/interfaces match
+4. Test components independently
+5. Check logs for details
+6. Review documentation
+7. Ask for help if stuck
+
+## Version Control Best Practices
+
+### Branch Strategy
+```bash
+# Check status
+git status
+
+# Create feature branch
+git checkout -b feature/{feature-name}
+
+# Stage changes
+git add {files}
+
+# Commit (after passing pre-commit checklist!)
+git commit -m "type: description"
+
+# Push
+git push origin {branch-name}
+```
+
+### Commit Message Format
+```
+type(scope): subject
+
+body (optional)
+
+footer (optional)
+```
+
+**Types**: feat, fix, docs, style, refactor, test, chore
+
+### Pull Request Checklist
+- [ ] All tests pass
+- [ ] Linting passes
+- [ ] Documentation updated
+- [ ] Code reviewed
+- [ ] No merge conflicts
+- [ ] Tested locally
+
+---
+
+**Remember**: 
+- 📖 Documentation first
+- 🎯 Plan before implementing
+- ✅ Quality over speed
+- 🧪 Test thoroughly
+- 📝 Document changes
+- 🔒 Security always
+- ⚡ Performance matters
+
+**Follow the checklist every time!**

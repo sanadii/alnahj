@@ -1,0 +1,114 @@
+---
+alwaysApply: false
+---
+# {Agent Name} - {Primary Role}
+
+## 🚨 CRITICAL DOCUMENTATION RULE - READ FIRST
+
+### ❌ NEVER CREATE DOCUMENTATION FILES IN ROOT DIRECTORY
+
+**Before creating ANY .md file, check this list:**
+
+| File Type | ❌ WRONG | ✅ CORRECT |
+|-----------|----------|------------|
+| **Completion Summary** | `FEATURE-COMPLETE.md` | `docs/archive/summaries/FEATURE-COMPLETE.md` |
+| **Active Plan** | `FEATURE-PLAN.md` | `docs/active-plans/FEATURE-PLAN.md` |
+| **Testing Guide** | `TEST-GUIDE.md` | `docs/guides/testing/test-guide.md` |
+| **Quick Fix Summary** | `QUICK-FIX.md` | `docs/archive/summaries/QUICK-FIX-COMPLETE.md` |
+| **Troubleshooting** | `FIX-ERROR.md` | `docs/guides/devops/fix-error.md` |
+
+**📖 Complete Guide**: `docs/guides/workflow/documentation-placement.md`
+
+**If you create a .md file in root, you VIOLATED this rule!**
+
+---
+
+## Role
+{One paragraph describing the agent's primary responsibility}
+
+## Core Responsibilities
+1. {Responsibility 1}
+2. {Responsibility 2}
+3. {Responsibility 3}
+4. **Always consult and update documentation**
+5. **Create handover documentation when requested**
+
+## Tech Stack
+{Technologies this agent works with}
+
+## 📚 Documentation First Approach
+
+### Pre-Work Workflow (MANDATORY)
+
+**Before starting any task, read in this order:**
+
+1. **App Level** (5 min): `docs/apps/{app}/APP.md`
+2. **Module Level** (15 min): `docs/apps/{app}/{module}/FULLSTACK.md`
+3. **API Contracts** (5 min): `docs/apps/{app}/{module}/API.md`
+4. **Current Status** (5 min): `docs/apps/{app}/{module}/TODO.md`
+
+**Total Reading Time**: ~30 minutes
+
+### Essential Documentation References
+- Architecture: `docs/architecture/`
+- Patterns: `docs/guides/core-patterns/`
+- Checklists: `docs/guides/checklists/pre-commit.md` ⭐
+
+### Always Update After Implementation
+- [ ] Update FULLSTACK.md if implementation changes
+- [ ] Update API.md if endpoints change
+- [ ] Update TODO.md with completion status
+- [ ] Follow checklist: `docs/guides/checklists/pre-commit.md`
+
+## 🚨 Documentation Placement (MANDATORY)
+
+**CRITICAL RULE: Never create documentation files in root directory**
+
+**Correct Locations**:
+- Completion Summaries: `docs/archive/summaries/[FEATURE]-COMPLETE.md`
+- Active Plans: `docs/active-plans/[FEATURE]-PLAN.md`
+- App-Specific Docs: `docs/apps/[app]/[module]/FULLSTACK.md`
+
+**Complete Guide**: `docs/guides/workflow/documentation-placement.md`
+
+## {Agent-Specific Sections}
+
+[Patterns, workflows, code examples specific to this agent]
+
+## 🎯 Recommended Next Steps Template
+
+**At the end of every task, provide:**
+
+```markdown
+## 🎯 Recommended Next Steps
+
+### {This Agent's Domain}
+- [ ] [Specific task with file path]
+- [ ] [Another specific task]
+
+### {Other Agent's Domain} (@agent-name.mdc)
+- [ ] [Task for other agent]
+
+### Documentation
+- [ ] Update FULLSTACK.md: [specific sections]
+- [ ] Update TODO.md: [completion percentage]
+```
+
+## Quality Checklist
+
+### Before Every Commit
+- [ ] Zero linting errors
+- [ ] All tests pass
+- [ ] Documentation updated
+- [ ] TODO.md reflects current state
+- [ ] No files created in root directory
+
+## Reference Examples
+- {Link to exemplary implementation}
+- {Link to pattern guide}
+
+---
+
+**Role**: {Summary}
+**Always**: {Key behaviors}
+**Never**: {Anti-patterns}

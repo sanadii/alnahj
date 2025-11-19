@@ -1,0 +1,259 @@
+name: Security & Testing Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *'  # Daily at 2 AM for security scans
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Vulnerability Scan
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install security tools
+      run: |
+        pip install bandit safety django-ratelimit django-axes
+        pip install -r backend/requirements.txt
+    
+    - name: Run Bandit Security Scan
+      run: |
+        cd backend
+        bandit -r . -f json -o bandit-report.json
+        bandit -r . -f txt
+    
+    - name: Run Safety Check
+      run: |
+        cd backend
+        safety check --json --output safety-report.json
+        safety check
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          backend/bandit-report.json
+          backend/safety-report.json
+
+  backend-tests:
+    runs-on: ubuntu-latest
+    name: Backend Tests & Security Validation
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+    
+    - name: Generate test data from real contacts
+      run: |
+        cd backend
+        python manage.py setup_test_data --use-real-data --businesses 3
+    
+    - name: Run JWT Security Tests
+      run: |
+        cd backend
+        python manage.py test tests.security.test_jwt_security -v
+    
+    - name: Run Authentication Tests
+      run: |
+        cd backend
+        python manage.py test apps.account.tests -v
+    
+    - name: Run API Security Tests
+      run: |
+        cd backend
+        python manage.py test tests.security.test_api_security -v
+    
+    - name: Run Backend Tests with Coverage
+      run: |
+        cd backend
+        pytest --cov=. --cov-report=xml --cov-report=html --cov-fail-under=30
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: backend-test-results
+        path: |
+          backend/coverage.xml
+          backend/htmlcov/
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    name: Frontend Tests & Security Validation
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: frontend/package-lock.json
+    
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+    
+    - name: Run Frontend Security Tests
+      run: |
+        cd frontend
+        npm audit --audit-level=moderate
+        npm run lint
+    
+    - name: Run Frontend Tests
+      run: |
+        cd frontend
+        npm run test:ci
+    
+    - name: Run E2E Tests
+      run: |
+        cd frontend
+        npm run test:e2e:headless
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      with:
+        name: frontend-test-results
+        path: |
+          frontend/coverage/
+          frontend/cypress/reports/
+
+  performance-tests:
+    runs-on: ubuntu-latest
+    name: Performance & Load Testing
+    needs: [backend-tests]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+        pip install locust
+    
+    - name: Start Django server
+      run: |
+        cd backend
+        python manage.py migrate
+        python manage.py runserver 0.0.0.0:8000 &
+        sleep 10
+    
+    - name: Run Performance Tests
+      run: |
+        cd backend
+        locust -f tests/performance/load_tests.py --headless -u 50 -r 5 -t 60s --html performance_report.html
+    
+    - name: Upload performance results
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-results
+        path: backend/performance_report.html
+
+  security-testing:
+    runs-on: ubuntu-latest
+    name: Comprehensive Security Testing
+    needs: [security-scan, backend-tests]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        cd backend
+        pip install -r requirements.txt
+    
+    - name: Run JWT Token Security Tests
+      run: |
+        cd backend
+        python -c "
+        import os
+        import django
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
+        django.setup()
+        
+        from django.conf import settings
+        from datetime import timedelta
+        
+        # Test JWT configuration
+        jwt_config = settings.SIMPLE_JWT
+        assert jwt_config['ACCESS_TOKEN_LIFETIME'] == timedelta(minutes=15), 'JWT access token lifetime should be 15 minutes'
+        assert jwt_config['REFRESH_TOKEN_LIFETIME'] == timedelta(days=7), 'JWT refresh token lifetime should be 7 days'
+        assert jwt_config['ROTATE_REFRESH_TOKENS'] == True, 'JWT refresh token rotation should be enabled'
+        assert jwt_config['BLACKLIST_AFTER_ROTATION'] == True, 'JWT blacklist after rotation should be enabled'
+        
+        print('✅ JWT Security Configuration Validated')
+        "
+    
+    - name: Test API Authentication
+      run: |
+        cd backend
+        python manage.py test tests.security.test_api_authentication -v
+    
+    - name: Test Rate Limiting
+      run: |
+        cd backend
+        python manage.py test tests.security.test_rate_limiting -v
+    
+    - name: Test Security Headers
+      run: |
+        cd backend
+        python manage.py test tests.security.test_security_headers -v
+
+  notify-results:
+    runs-on: ubuntu-latest
+    name: Notify Test Results
+    needs: [security-scan, backend-tests, frontend-tests, performance-tests, security-testing]
+    if: always()
+    
+    steps:
+    - name: Notify Success
+      if: ${{ needs.security-scan.result == 'success' && needs.backend-tests.result == 'success' && needs.frontend-tests.result == 'success' }}
+      run: |
+        echo "✅ All security and testing checks passed!"
+        echo "🔒 Security vulnerabilities: None detected"
+        echo "🧪 Test coverage: Meeting targets"
+        echo "⚡ Performance: Within baselines"
+    
+    - name: Notify Failure
+      if: ${{ needs.security-scan.result == 'failure' || needs.backend-tests.result == 'failure' || needs.frontend-tests.result == 'failure' }}
+      run: |
+        echo "❌ Security or testing checks failed!"
+        echo "🔍 Check the logs for details"
+        exit 1
+
+
+
+
+

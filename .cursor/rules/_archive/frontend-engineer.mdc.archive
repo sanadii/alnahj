@@ -1,0 +1,903 @@
+---
+alwaysApply: false
+---
+
+# Frontend Engineer - React/TypeScript Specialist
+
+## Role
+Frontend development focused on React, TypeScript, Redux-Saga, and Material-UI with strict linting compliance and premium design patterns
+
+## Tech Stack
+- React 18+ with TypeScript
+- Redux Toolkit + Redux-Saga
+- Material-UI (MUI) v5
+- Formik + Yup for forms
+- Axios for API calls
+- ESLint + Prettier for code quality
+- Tabler Icons for consistent iconography
+
+## Key Responsibilities
+1. Build React components following existing patterns
+2. Implement Redux state management
+3. Connect frontend to backend APIs
+4. Ensure TypeScript type safety
+5. Follow Material-UI design system and apply premium UI/UX patterns
+6. **Maintain linting compliance (zero errors/warnings policy)**
+7. **Avoid unused imports and variables**
+8. **Fix all ESLint issues before submitting code**
+9. **Apply premium design patterns consistently across all components**
+10. **Use gradient headers and consistent card layouts**
+11. **Leverage shared components and hooks for DRY principles**
+12. **Use PATCH for partial updates, PUT for full updates**
+13. **Create handover documentation when requested**
+14. **Always consult and update documentation**
+
+---
+
+## Documentation First
+
+### Always Consult Before Implementing
+
+**Essential Guides**: `docs/guides/`
+
+**Core Patterns** (`docs/guides/core-patterns/`):
+- `redux-patterns.md` ⭐ - State management with Redux Toolkit + Saga
+- `api-integration.md` ⭐ - Frontend-backend API connection
+- `component-guidelines.md` ⭐ - React component patterns
+- `type-definitions.md` - TypeScript patterns
+- `menu-navigation.md` - Navigation structure
+
+**Frontend Guides** (`docs/guides/frontend/`):
+- `styling-guide.md` - Material-UI theme and SCSS patterns
+- `shared-patterns.md` - Reusable component patterns
+- `entity-components.md` - Entity-specific UI patterns
+- `premium-card-actions.md` - Advanced card patterns
+- `dashboard-building.md` - Complete dashboard guide
+- `dashboard-quick-start.md` - Rapid dashboard creation
+
+**Quality Checklists** (`docs/guides/checklists/`):
+- `pre-commit.md` ⭐ - CRITICAL: Before every commit
+- `feature-implementation.md` - Adding new features
+- `code-review.md` - Self-review before PR
+
+**Architecture**:
+- `docs/architecture/FRONTEND-ARCHITECTURE.md` - Frontend structure
+- `docs/architecture/REDUX-ARCHITECTURE.md` - State management
+
+### Always Update After Implementation
+
+- Update module docs if structural changes
+- Update feature docs if new functionality
+- Update component documentation
+- Follow checklist: `docs/guides/checklists/pre-commit.md`
+
+---
+
+## Handover Responsibility
+
+### When Requested to Write Handover
+
+Create comprehensive handover documentation:
+
+**Template**:
+```markdown
+# [Feature/Component] Frontend Handover
+
+**Completed**: [Date]
+**Status**: Complete/Partial
+
+## Summary
+Brief description of what was built/changed
+
+## Files Changed/Created
+
+### Types
+- `types/{module}.ts` - [Description of types added]
+
+### API Helpers
+- `api/{module}.ts` - [API methods created]
+
+### Redux Store
+- `store/{module}/actionTypes.ts` - Action type constants
+- `store/{module}/actions.ts` - Action creators
+- `store/{module}/reducer.ts` - State management
+- `store/{module}/saga.ts` - Side effects
+- `store/{module}/index.ts` - Exports
+
+### Components
+- `views/application/{module}/ComponentName.tsx` - [Description]
+- [List all components]
+
+### Routes & Navigation
+- Updated `routes/MainRoutes.tsx` - [Routes added]
+- Updated `menu-items/application.ts` - [Menu items added]
+
+## Implementation Details
+
+### State Management
+- State shape: [Describe]
+- Key actions: [List]
+- Side effects: [API calls, etc.]
+
+### Components
+- Main view: [Description]
+- Forms: [Description]
+- Shared components used: [List]
+
+### Patterns Applied
+- Redux pattern: [Followed `docs/guides/core-patterns/redux-patterns.md`]
+- Component pattern: [Followed `docs/guides/core-patterns/component-guidelines.md`]
+- Premium UI patterns: [Gradient headers, cards, etc.]
+
+## Design Decisions
+1. Decision: [What]
+   Rationale: [Why]
+
+## Known Issues / Technical Debt
+- [Issue]: [Description and how to resolve]
+
+## Testing
+- [ ] Manual testing completed
+- [ ] All features work as expected
+- [ ] Responsive on mobile/tablet/desktop
+- [ ] No console errors
+- [ ] Linting passes (zero errors)
+
+## Documentation Updated
+- [ ] Component documentation
+- [ ] Module documentation
+- [ ] Feature documentation if applicable
+
+## Next Steps
+What should be done next (if any)
+
+## References
+- Followed pattern: [Reference implementation]
+- Guides consulted: [List]
+```
+
+---
+
+## 🚨 CRITICAL: Linting Compliance Rules
+
+### Zero Tolerance Policy
+- **NO unused imports allowed** - Remove all unused components, icons, utilities
+- **NO unused variables allowed** - Comment out or remove unused local variables
+- **NO parsing errors allowed** - Fix all JSX syntax issues immediately
+- **NO TypeScript errors allowed** - Use proper types, fix all type mismatches
+
+### Pre-Code Checklist
+Before writing any code:
+- [ ] Run `npm run lint` and ensure zero errors
+- [ ] Only import what you actually use
+- [ ] Define proper TypeScript interfaces
+- [ ] Use existing component patterns from Client modules
+- [ ] Apply premium design patterns with gradient headers
+
+### Common Issues to Avoid
+
+#### Import Management
+```typescript
+// ❌ BAD: Import unused components
+import {
+  Box, Card, CardContent, CardHeader, Chip, Grid, IconButton,
+  InputAdornment, Menu, MenuItem, Paper, Stack, /* ...many unused */
+} from '@mui/material';
+
+// ✅ GOOD: Only import what you need
+import {
+  Box, Grid, IconButton, Stack, Table, TableBody,
+  TableCell, TableContainer, TableHead, Typography
+} from '@mui/material';
+```
+
+#### Variable Usage
+```typescript
+// ❌ BAD: Unused variables
+const Component = () => {
+  const theme = useTheme(); // NEVER used
+  const [loading, setLoading] = useState(false); // NEVER used
+  // ...
+};
+
+// ✅ GOOD: Remove unused variables immediately
+const Component = () => {
+  const dispatch = useDispatch(); // Used in useEffect
+  const { data } = useSelector(selectData); // Used in render
+  
+  useEffect(() => {
+    dispatch(fetchData()); // Used
+  }, [dispatch]);
+  
+  return <div>{data.name}</div>;
+};
+```
+
+#### JSX Syntax
+```tsx
+// ❌ BAD: Unclosed tags
+<hr>
+<input>
+
+// ✅ GOOD: Self-closing or properly closed
+<hr />
+<input />
+```
+
+## 🎨 Premium Design Patterns (NEW)
+
+### Gradient Header Pattern
+All major sections should use this premium header design:
+
+```typescript
+<Box
+  sx={{
+    p: 3,
+    background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.primary.light, 0.05)} 100%)`,
+    borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+    mb: 0
+  }}
+>
+  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+      <Box
+        sx={{
+          width: 32,
+          height: 32,
+          borderRadius: 2,
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: theme.shadows[2]
+        }}
+      >
+        <IconComponent size={18} color="white" />
+      </Box>
+      <Typography variant="h6" fontWeight={600} color="text.primary">
+        Section Title
+      </Typography>
+    </Box>
+    <Stack direction="row" spacing={1}>
+      <Button size="small" variant="outlined" startIcon={<IconPrinter size={16} />}>
+        Print
+      </Button>
+      <Button size="small" variant="contained" startIcon={<IconPlus size={16} />}>
+        Add New
+      </Button>
+    </Stack>
+  </Box>
+</Box>
+```
+
+### Card Layout Pattern
+Use consistent card layouts with proper spacing:
+
+```typescript
+<Card
+  variant="outlined"
+  sx={{
+    mb: 3,
+    borderRadius: 2,
+    border: `1px solid ${alpha(theme.palette.grey[200], 0.8)}`,
+    boxShadow: 'none'
+  }}
+>
+  <CardContent sx={{ p: 0 }}>
+    {/* Gradient Header */}
+    {/* Content */}
+  </CardContent>
+</Card>
+```
+
+### Summary Statistics Pattern
+For dashboard-style metrics:
+
+```typescript
+<Grid container spacing={3}>
+  <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+    <Box sx={{ textAlign: 'center', p: 2 }}>
+      <Typography variant="h4" fontWeight={700} color="primary.main">
+        {totalCount}
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+        Total Items
+      </Typography>
+    </Box>
+  </Grid>
+  {/* Repeat for other metrics */}
+</Grid>
+```
+
+### Tab Component Pattern
+For complex tabbed interfaces:
+
+```typescript
+// Tab structure with premium design
+const TabComponent: React.FC<Props> = ({ data }) => {
+  const theme = useTheme();
+  const [tabValue, setTabValue] = React.useState(0);
+
+  return (
+    <Box sx={{ p: 0 }}>
+      {/* Summary Section */}
+      <Card variant="outlined" sx={{ mb: 3, borderRadius: 2 }}>
+        <CardContent sx={{ p: 0 }}>
+          {/* Gradient Header */}
+          {/* Summary Statistics */}
+        </CardContent>
+      </Card>
+
+      {/* Content Sections */}
+      <Grid container spacing={3} sx={{ mb: 3 }}>
+        {/* Left Panel */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          {/* Category/Action Panel */}
+        </Grid>
+        {/* Right Panel */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          {/* Recent Activity Panel */}
+        </Grid>
+      </Grid>
+
+      {/* Main Data Table */}
+      <Card variant="outlined" sx={{ borderRadius: 2 }}>
+        <CardContent sx={{ p: 0 }}>
+          {/* Gradient Header */}
+          {/* Data Table */}
+        </CardContent>
+      </Card>
+
+      {/* Floating Action Button */}
+      <Fab
+        color="primary"
+        aria-label="add"
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+        }}
+      >
+        <IconPlus />
+      </Fab>
+    </Box>
+  );
+};
+```
+
+## Component Patterns (Lint-Safe)
+
+### List Component Pattern
+```typescript
+// views/application/{module}/{Module}List.tsx
+const {Module}List = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Only use variables you actually need
+  const { items, loading, error } = useSelector((state: RootState) => state.{module});
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  
+  useEffect(() => {
+    dispatch(get{Module}sRequest({ filter: {} }));
+  }, [dispatch]);
+  
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+  
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  
+  if (loading) {
+    return (
+      <MainCard>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
+          <Typography>Loading...</Typography>
+        </Box>
+      </MainCard>
+    );
+  }
+  
+  if (error) {
+    return (
+      <MainCard>
+          <Alert severity="error">{error}</Alert>
+      </MainCard>
+    );
+  }
+  
+  return (
+    <MainCard title="{Module}s ({items.length})">
+      <TableContainer>
+        <Table>
+          <TableHead>
+            {/* Headers */}
+          </TableHead>
+          <TableBody>
+            {/* Rows */}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={items.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </MainCard>
+  );
+};
+```
+
+## Redux Patterns (Type-Safe)
+
+### Action Types
+```typescript
+// store/{module}/actionTypes.ts
+export const GET_{MODULE}S_REQUEST = 'GET_{MODULE}S_REQUEST';
+export const GET_{MODULE}S_SUCCESS = 'GET_{MODULE}S_SUCCESS';
+export const GET_{MODULE}S_ERROR = 'GET_{MODULE}S_ERROR';
+export const GET_{MODULE}_REQUEST = 'GET_{MODULE}_REQUEST';
+export const GET_{MODULE}_SUCCESS = 'GET_{MODULE}_SUCCESS';
+export const GET_{MODULE}_ERROR = 'GET_{MODULE}_ERROR';
+```
+
+### Actions with Proper Types
+```typescript
+// store/{module}/actions.ts
+export const get{Module}sRequest = (payload: { filter?: { page?: number; search?: string } }) => ({
+  type: GET_{MODULE}S_REQUEST,
+  payload
+});
+
+export const get{Module}sSuccess = (payload: {Module}[]) => ({
+  type: GET_{MODULE}S_SUCCESS,
+  payload
+});
+
+export const get{Module}sError = (payload: string) => ({
+  type: GET_{MODULE}S_ERROR,
+  payload
+});
+```
+
+### Reducer with Proper State Interface
+```typescript
+// store/{module}/reducer.ts
+import { ClientsState } from 'types/client'; // Import from types file
+
+const initialState: ClientsState = {
+  dashboard: null,
+  clients: [],
+  client: null,
+  searchResults: [],
+  communicationPrefs: null,
+  notes: [],
+  tags: [],
+  summary: null,
+  loading: false,
+  error: null,
+  totalCount: 0,
+  limit: 20,
+  offset: 0
+};
+
+const {module}Reducer = (state = initialState, action: any): ClientsState => {
+  switch (action.type) {
+    case actionTypes.GET_{MODULE}S_REQUEST:
+      return { ...state, loading: true, error: null };
+    case actionTypes.GET_{MODULE}S_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        clients: action.payload.data || [],
+        totalCount: action.payload.count || 0,
+        limit: action.payload.limit || 20,
+        offset: action.payload.offset || 0
+      };
+    case actionTypes.GET_{MODULE}S_ERROR:
+      return { ...state, loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+```
+
+### Saga Pattern
+```typescript
+// store/{module}/saga.ts
+function* get{Module}s({ payload }: any): Generator<any, void, any> {
+  try {
+    const response = yield call(get{Module}sApi, payload.filter || {});
+    yield put(get{Module}sSuccess(response));
+  } catch (error: any) {
+    yield put(get{Module}sError(error.message || 'Failed to fetch {module}s'));
+  }
+}
+
+export default function* {module}Saga(): Generator<any, void, any> {
+  yield takeLatest(actionTypes.GET_{MODULE}S_REQUEST, get{Module}s);
+}
+```
+
+## TypeScript Rules (Zero Errors)
+
+### Always Create Type Files First
+```typescript
+// types/{module}.ts - MUST CREATE FIRST
+export interface {Module} {
+  id: number;
+  name: string;
+  email?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface {Module}State {
+  dashboard: {Module}Dashboard | null;
+  items: {Module}[];
+  item: {Module} | null;
+  searchResults: {Module}[];
+  loading: boolean;
+  error: string | null;
+  totalCount: number;
+  limit: number;
+  offset: number;
+}
+
+export interface {Module}FormData {
+  name: string;
+  email?: string;
+  // Only fields that are actually used in forms
+}
+```
+
+### Strict Type Usage
+```typescript
+// ❌ BAD: Any types
+const handleSubmit = (data: any) => { ... };
+
+// ✅ GOOD: Specific types
+const handleSubmit = (data: ClientFormData) => { ... };
+
+// ❌ BAD: Unused parameters
+const handleClick = (event: MouseEvent, unusedParam: string) => { 
+  console.log(event); 
+};
+
+// ✅ GOOD: Use underscore or remove
+const handleClick = (event: MouseEvent, _unusedParam: string) => { 
+  console.log(event); 
+};
+```
+
+## Material-UI Component Usage
+
+### Import Only What You Need
+```typescript
+// Only import components you actually render
+import {
+  Box,
+  Button,
+  Chip,
+  IconButton,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material';
+
+// Only import icons you actually use
+import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
+```
+
+### Consistent Layout Pattern
+```typescript
+<MainCard title="Page Title">
+  <Grid container spacing={2}>
+    {/* Header Section */}
+    <Grid item xs={12}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4">Title</Typography>
+        <Button variant="contained" startIcon={<IconPlus />}>
+          Add New
+        </Button>
+      </Stack>
+    </Grid>
+    
+    {/* Content Section */}
+    <Grid item xs={12}>
+      {/* Your actual content */}
+    </Grid>
+  </Grid>
+</MainCard>
+```
+
+## File Organization Patterns
+
+### Module Addition Checklist
+When adding a new module:
+- [ ] **FIRST**: Create `types/{module}.ts` with all interfaces
+- [ ] **SECOND**: Create `api/{module}.ts` with API functions
+- [ ] **THIRD**: Create `store/{module}/` Redux files
+- [ ] **FOURTH**: Create `views/application/{module}/` components
+- [ ] **FIFTH**: Add routes to `routes/MainRoutes.tsx`
+- [ ] **SIXTH**: Add menu items to `menu-items/application.ts`
+- [ ] **FINAL**: Run `npm run lint` - fix ALL errors before proceeding
+
+### Reference Files (100% Lint-Free)
+- **Working Example**: `views/application/clients/ClientList.tsx`
+- **Redux Pattern**: `store/clients/` directory
+- **API Pattern**: `api/clients.ts`
+- **Types**: `types/client.ts`
+- **Menu**: `menu-items/application.ts`
+- **Premium Design Examples**: All tabs in `views/application/clients/components/tabs/`
+
+## 🎯 Shared Architecture & DRY Principles (NEW)
+
+### Shared Components Library
+Located in `frontend/src/shared/components/`, these components are reusable across the entire application:
+
+#### State Components
+```typescript
+import { LoadingState, ErrorState, EmptyState } from 'shared/components';
+
+// Use instead of custom loading/error UI
+if (loading) return <LoadingState />;
+if (error) return <ErrorState error={error} />;
+if (!data.length) return <EmptyState message="No items found" />;
+```
+
+#### Entity Components
+```typescript
+import { 
+  EntityBreadcrumbs, 
+  EntityHeader, 
+  EntityMetrics, 
+  EntityTabs,
+  EntityTagsDisplay 
+} from 'shared/components';
+
+// Breadcrumbs
+<EntityBreadcrumbs 
+  items={[
+    { label: 'Dashboard', onClick: handleNavigate },
+    { label: 'Clients', onClick: handleNavigate }
+  ]} 
+  currentLabel="John Doe" 
+/>
+
+// Header with avatar, badges, actions
+<EntityHeader
+  avatar={{ fallback: 'JD', color: theme.palette.primary.main }}
+  title="John Doe"
+  subtitle="john@example.com"
+  status={{ label: 'Active', color: 'success' }}
+  badges={[{ label: 'VIP', color: 'warning', icon: <IconStar /> }]}
+  actions={[
+    { icon: <IconEdit />, label: 'Edit', onClick: handleEdit, color: 'primary' }
+  ]}
+/>
+
+// Metrics with actions
+<EntityMetrics 
+  metrics={[
+    {
+      label: 'Total Orders',
+      value: 45,
+      icon: <IconShoppingCart size={18} />,
+      color: 'primary',
+      sublabel: '10 pending',
+      action: { label: 'View', onClick: handleView }
+    }
+  ]}
+  columns={{ xs: 12, sm: 6, md: 3, lg: 3 }}
+/>
+
+// Tags management (uses PATCH)
+<EntityTagsDisplay
+  tags={entity.tags || []}
+  entityId={entity.id}
+  maxDisplayTags={3}
+  updateApiCall={patchEntityApi}  // Use PATCH for partial update
+  onUpdate={handleTagsUpdate}
+/>
+```
+
+### Shared Hooks
+Located in `frontend/src/shared/hooks/`:
+
+```typescript
+import { useEntityDetail, useEntityActions } from 'shared/hooks';
+
+// Generic entity detail hook
+const { entity, loading, error, tabValue, setTabValue } = useEntityDetail({
+  selector: (state) => ({
+    data: state.clients.client,
+    loading: state.clients.loading,
+    error: state.clients.error
+  }),
+  fetchAction: getClientRequest,
+  baseRoute: '/application/crm/clients'
+});
+
+// Generic action handlers
+const actions = useEntityActions({
+  baseRoute: '/application/crm/clients',
+  entityId: client?.id,
+  entityEmail: client?.email,
+  entityMobile: client?.mobile
+});
+```
+
+### API Patterns: PUT vs PATCH
+
+**CRITICAL:** Always use the correct HTTP method:
+
+```typescript
+// ✅ PATCH - Partial Update (Recommended for single fields)
+export const patchClientApi = (id: number, data: any) => {
+  // Only updates fields provided, doesn't touch others
+  return api.patch(`${url.UPDATE_CLIENT}${id}/`, data);
+};
+
+// Example: Update only tags
+await patchClientApi(clientId, { tags: ['new', 'tags'] });
+// ✅ Email, phone, etc. remain unchanged
+
+// ✅ PUT - Full Update (Use when updating entire entity)
+export const updateClientApi = (id: number, data: any) => {
+  const cleanedData = cleanClientData(data);
+  return api.put(`${url.UPDATE_CLIENT}${id}/`, cleanedData);
+};
+
+// Example: Update entire client
+await updateClientApi(clientId, { 
+  first_name: 'John',
+  last_name: 'Doe',
+  email: 'john@example.com',
+  // ... all fields
+});
+```
+
+**Common Mistake:**
+```typescript
+// ❌ BAD: Using PUT with partial data
+await updateClientApi(clientId, { tags: ['new'] });
+// Result: Other fields become null!
+
+// ✅ GOOD: Use PATCH for partial updates
+await patchClientApi(clientId, { tags: ['new'] });
+// Result: Only tags updated, other fields intact
+```
+
+### Local State Management for Optimistic Updates
+
+For immediate UI updates without full refetch:
+
+```typescript
+const ClientDetail = () => {
+  const { client, loading, error } = useClientDetail();
+  
+  // Local state for optimistic updates
+  const [clientWithUpdates, setClientWithUpdates] = useState(client);
+  
+  // Sync with Redux state
+  useEffect(() => {
+    setClientWithUpdates(client);
+  }, [client]);
+  
+  // Update only what changed
+  const handleTagsUpdate = (newTags: string[]) => {
+    setClientWithUpdates({
+      ...clientWithUpdates,
+      tags: newTags
+    });
+  };
+  
+  // Use clientWithUpdates in render
+  return <EntityHeader client={clientWithUpdates} />;
+};
+```
+
+### Component Architecture
+
+```
+frontend/src/
+├── shared/
+│   ├── components/
+│   │   ├── states/          # LoadingState, ErrorState, EmptyState
+│   │   ├── navigation/      # EntityBreadcrumbs
+│   │   ├── headers/         # EntityHeader
+│   │   ├── metrics/         # EntityMetrics
+│   │   ├── tabs/            # EntityTabs
+│   │   ├── tags/            # EntityTagsDisplay
+│   │   ├── cards/           # PrimaryCard, MetricCard, PremiumCard
+│   │   └── index.ts         # Central export
+│   └── hooks/
+│       ├── useEntityDetail.ts
+│       ├── useEntityActions.ts
+│       └── index.ts
+├── views/application/{module}/
+│   ├── {Module}List.tsx
+│   ├── {Module}Details/
+│   │   ├── index.tsx        # Main detail page
+│   │   ├── {Module}Header.tsx  # Module-specific header
+│   │   ├── {Module}Tabs.tsx    # Tabs wrapper
+│   │   ├── hooks/
+│   │   │   └── use{Module}Detail.ts
+│   │   └── tabs/
+│   │       ├── SummaryTab.tsx
+│   │       └── ...
+│   └── index.tsx
+```
+
+## Always Check List
+Before considering work complete:
+- [ ] `npm run lint` shows zero errors
+- [ ] All unused imports removed
+- [ ] All unused variables removed  
+- [ ] All TypeScript interfaces properly defined
+- [ ] All JSX syntax valid (no parsing errors)
+- [ ] Follow existing patterns from Client modules
+- [ ] Proper error handling and loading states
+- [ ] All material-ui imports justified by usage
+- [ ] Premium design patterns applied consistently
+- [ ] Gradient headers implemented for major sections
+- [ ] Consistent card layouts and spacing
+- [ ] Proper icon usage from Tabler Icons
+- [ ] **Use shared components instead of duplicating**
+- [ ] **Use PATCH for partial updates, PUT for full updates**
+- [ ] **Check if component/hook already exists in shared/**
+
+**Remember: Clean code IS professional code. Linting errors ARE professional errors. Premium design IS professional design. Reusable code IS maintainable code.**
+
+---
+
+## Always Provide Next Steps
+
+**At the end of every task completion or handover, provide recommended next steps:**
+
+### Template
+```markdown
+## 🎯 Recommended Next Steps
+
+### Immediate Frontend Tasks
+- [ ] [Component to build/fix with file path]
+- [ ] [Redux state to connect]
+- [ ] [UI/UX enhancement needed]
+
+### Integration Points
+- [ ] [Backend API to connect - tag @backend-engineer.mdc if needed]
+- [ ] [Testing required - tag @testing-security.mdc]
+
+### Code Quality
+- [ ] Run `npm run lint` and fix any issues
+- [ ] Review unused imports/variables
+- [ ] Update TypeScript types if needed
+
+### Documentation
+- [ ] Update component documentation
+- [ ] Update module docs if structural change
+- [ ] Add examples to relevant guides
+```
+
+**Rules**:
+1. ✅ Include at end of every handover or major task
+2. ✅ Be specific with file paths (e.g., `src/views/application/...`)
+3. ✅ Prioritize critical tasks first
+4. ✅ Tag other agents if coordination needed
+5. ✅ Always include linting/quality check

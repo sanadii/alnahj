@@ -1,0 +1,460 @@
+---
+alwaysApply: false
+---
+# Backend API Patterns
+
+**Universal API design patterns - Adapt to your framework (Django, FastAPI, Express, Spring Boot, etc.)**
+
+## API Response Format (Standardized)
+
+### Consistent Response Structure
+```json
+{
+  "data": {},
+  "message": "Operation successful",
+  "error": null,
+  "meta": {
+    "timestamp": "2024-01-01T00:00:00Z",
+    "requestId": "uuid",
+    "pagination": {
+      "total": 100,
+      "page": 1,
+      "limit": 20
+    }
+  }
+}
+```
+
+**Benefits**:
+- Predictable structure for clients
+- Easy error handling
+- Metadata for pagination, etc.
+- Success messages for user feedback
+
+## RESTful API Design
+
+### Resource Naming
+```
+✅ GOOD:
+/api/users/                  # List all users
+/api/users/{id}/             # Get specific user
+/api/users/{id}/activate/    # Action on user
+/api/products/categories/    # Nested resource
+
+❌ BAD:
+/api/getUsers               # Action in URL
+/api/user                   # Singular resource name
+/api/users?id=123           # ID in query
+```
+
+### HTTP Methods
+```
+GET     /api/users/          # List resources
+POST    /api/users/          # Create resource
+GET     /api/users/{id}/     # Get single resource
+PUT     /api/users/{id}/     # Full update
+PATCH   /api/users/{id}/     # Partial update
+DELETE  /api/users/{id}/     # Delete resource
+```
+
+### Status Codes
+```
+200 OK              # Successful GET, PUT, PATCH
+201 Created         # Successful POST
+204 No Content      # Successful DELETE
+400 Bad Request     # Client error (validation, etc.)
+401 Unauthorized    # Not authenticated
+403 Forbidden       # Not authorized
+404 Not Found       # Resource doesn't exist
+409 Conflict        # Resource conflict
+422 Unprocessable   # Validation error
+500 Server Error    # Server error
+```
+
+## API Endpoint Pattern
+
+### CRUD Operations
+```typescript
+// List resources (with filtering, pagination, sorting)
+GET    /api/resources/?status=active&page=1&limit=20&sort=-created_at
+
+// Get single resource
+GET    /api/resources/{id}/
+
+// Create resource
+POST   /api/resources/
+Body: { name: "...", ... }
+
+// Full update
+PUT    /api/resources/{id}/
+Body: { name: "...", status: "...", ... }  // All fields
+
+// Partial update
+PATCH  /api/resources/{id}/
+Body: { status: "active" }  // Only changed fields
+
+// Delete resource
+DELETE /api/resources/{id}/
+```
+
+### Custom Actions
+```typescript
+// Action on single resource (detail=true)
+POST   /api/resources/{id}/activate/
+POST   /api/resources/{id}/publish/
+POST   /api/resources/{id}/archive/
+
+// Action on collection (detail=false)
+GET    /api/resources/stats/
+POST   /api/resources/bulk-import/
+POST   /api/resources/export/
+```
+
+## Request/Response Patterns
+
+### List Response
+```json
+{
+  "data": [
+    { "id": 1, "name": "Item 1" },
+    { "id": 2, "name": "Item 2" }
+  ],
+  "message": "Resources retrieved successfully",
+  "meta": {
+    "pagination": {
+      "total": 100,
+      "page": 1,
+      "limit": 20,
+      "totalPages": 5
+    },
+    "filters": {
+      "status": "active"
+    }
+  }
+}
+```
+
+### Single Resource Response
+```json
+{
+  "data": {
+    "id": 1,
+    "name": "Item 1",
+    "status": "active",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "message": "Resource retrieved successfully"
+}
+```
+
+### Error Response
+```json
+{
+  "data": null,
+  "message": "Validation failed",
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "fields": {
+      "email": ["Email is required", "Invalid email format"],
+      "password": ["Password must be at least 8 characters"]
+    }
+  }
+}
+```
+
+## Filtering, Searching, Sorting
+
+### Query Parameters
+```typescript
+// Filtering
+GET /api/products/?status=active&category=electronics
+
+// Searching
+GET /api/products/?search=laptop
+
+// Sorting (use - for descending)
+GET /api/products/?sort=-created_at,name
+
+// Pagination
+GET /api/products/?page=2&limit=20
+
+// Combined
+GET /api/products/?status=active&search=laptop&sort=-price&page=1&limit=20
+```
+
+### Field Selection (Sparse Fieldsets)
+```typescript
+// Only return specific fields
+GET /api/products/?fields=id,name,price
+
+// Exclude fields
+GET /api/products/?exclude=description,long_text
+```
+
+## Security Patterns
+
+### Authentication
+```typescript
+// Token-based (JWT, Bearer)
+Authorization: Bearer <token>
+
+// API Key
+X-API-Key: <api-key>
+
+// Session-based
+Cookie: sessionid=<session-id>
+```
+
+### Multi-Tenancy (if applicable)
+```typescript
+// Every query must filter by tenant/organization
+// Backend pseudocode:
+function getResources(user) {
+  return db.resources
+    .where('organization_id', user.organization_id)
+    .get();
+}
+
+// CRITICAL: Always enforce tenant isolation
+// NEVER allow cross-tenant access
+```
+
+### Rate Limiting
+```typescript
+// Response headers
+X-RateLimit-Limit: 1000
+X-RateLimit-Remaining: 999
+X-RateLimit-Reset: 1640995200
+
+// When exceeded
+HTTP 429 Too Many Requests
+{
+  "error": {
+    "message": "Rate limit exceeded",
+    "retryAfter": 60
+  }
+}
+```
+
+## Validation Patterns
+
+### Request Validation
+```typescript
+// Pseudocode for validation
+interface CreateUserRequest {
+  email: string;      // Required, valid email
+  name: string;       // Required, 2-100 chars
+  age?: number;       // Optional, 0-120
+  role: 'user' | 'admin';  // Enum
+}
+
+function validateCreateUser(data) {
+  if (!data.email) {
+    throw ValidationError('email', 'Email is required');
+  }
+  if (!isValidEmail(data.email)) {
+    throw ValidationError('email', 'Invalid email format');
+  }
+  // ... more validations
+}
+```
+
+### Business Logic Validation
+```typescript
+// Check business rules
+function createOrder(userId, items) {
+  // Validate user can create order
+  if (!user.isActive) {
+    throw BusinessError('User account is inactive');
+  }
+  
+  // Validate items exist and are available
+  for (item of items) {
+    if (item.stock < item.quantity) {
+      throw BusinessError(`Insufficient stock for ${item.name}`);
+    }
+  }
+  
+  // ... create order
+}
+```
+
+## Performance Patterns
+
+### N+1 Query Problem
+```typescript
+// ❌ BAD: N+1 queries
+const users = await db.users.all();
+for (user of users) {
+  user.posts = await db.posts.where('user_id', user.id).get();
+}
+
+// ✅ GOOD: Eager loading / joins
+const users = await db.users
+  .with('posts')  // Eager load relationships
+  .all();
+
+// Or using JOIN
+const users = await db.query(`
+  SELECT users.*, posts.*
+  FROM users
+  LEFT JOIN posts ON users.id = posts.user_id
+`);
+```
+
+### Pagination
+```typescript
+// Offset-based (simple but slow for large datasets)
+GET /api/users/?page=2&limit=20
+// Fetches records 21-40
+
+// Cursor-based (faster for large datasets)
+GET /api/users/?cursor=eyJpZCI6MTAwfQ==&limit=20
+// Fetches records after cursor
+```
+
+### Caching
+```typescript
+// Response caching
+Cache-Control: public, max-age=3600
+ETag: "33a64df551425fcc55e4d42a148795d9"
+
+// Conditional requests
+If-None-Match: "33a64df551425fcc55e4d42a148795d9"
+// Returns 304 Not Modified if unchanged
+```
+
+## Error Handling
+
+### Global Error Handler
+```typescript
+// Centralized error handling
+function errorHandler(error) {
+  if (error instanceof ValidationError) {
+    return {
+      status: 400,
+      body: {
+        data: null,
+        message: 'Validation failed',
+        error: {
+          code: 'VALIDATION_ERROR',
+          fields: error.fields
+        }
+      }
+    };
+  }
+  
+  if (error instanceof NotFoundError) {
+    return {
+      status: 404,
+      body: {
+        data: null,
+        message: 'Resource not found',
+        error: { code: 'NOT_FOUND' }
+      }
+    };
+  }
+  
+  // Log unexpected errors
+  logger.error(error);
+  
+  // Don't expose internal errors to clients
+  return {
+    status: 500,
+    body: {
+      data: null,
+      message: 'Internal server error',
+      error: { code: 'INTERNAL_ERROR' }
+    }
+  };
+}
+```
+
+## API Documentation
+
+### OpenAPI/Swagger
+```yaml
+openapi: 3.0.0
+info:
+  title: My API
+  version: 1.0.0
+
+paths:
+  /api/users/:
+    get:
+      summary: List all users
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive]
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+```
+
+## Versioning
+
+### URL Versioning (Recommended)
+```
+/api/v1/users/
+/api/v2/users/
+```
+
+### Header Versioning
+```
+Accept: application/vnd.api.v1+json
+```
+
+### Query Parameter Versioning
+```
+/api/users/?version=2
+```
+
+## Best Practices Summary
+
+### API Design
+- ✅ RESTful resource naming
+- ✅ Proper HTTP methods and status codes
+- ✅ Consistent response format
+- ✅ Meaningful error messages
+- ✅ API versioning strategy
+
+### Security
+- ✅ Authentication required
+- ✅ Authorization checks
+- ✅ Rate limiting
+- ✅ Input validation
+- ✅ SQL injection prevention
+- ✅ CORS configuration
+
+### Performance
+- ✅ Avoid N+1 queries
+- ✅ Pagination for large datasets
+- ✅ Response caching
+- ✅ Database indexing
+- ✅ Query optimization
+
+### Documentation
+- ✅ API documentation (OpenAPI/Swagger)
+- ✅ Example requests/responses
+- ✅ Error codes documented
+- ✅ Authentication explained
+
+---
+
+**Remember**: 
+- 🎯 Consistent patterns across endpoints
+- 🔒 Security first
+- ⚡ Performance matters
+- 📖 Document everything
+- ✅ Validate all inputs
+- 🐛 Handle errors gracefully
+
+**Adapt these patterns to your specific framework and requirements!**

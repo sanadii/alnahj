@@ -1,0 +1,67 @@
+/**
+ * Guarantees Redux Action Types
+ * Election Management System
+ */
+
+// ============================================================================
+// ACTION TYPES
+// ============================================================================
+
+export const GET_GUARANTEES_REQUEST = 'guarantees/GET_GUARANTEES_REQUEST';
+export const GET_GUARANTEES_SUCCESS = 'guarantees/GET_GUARANTEES_SUCCESS';
+export const GET_GUARANTEES_FAILURE = 'guarantees/GET_GUARANTEES_FAILURE';
+
+export const CREATE_GUARANTEE_REQUEST = 'guarantees/CREATE_GUARANTEE_REQUEST';
+export const CREATE_GUARANTEE_SUCCESS = 'guarantees/CREATE_GUARANTEE_SUCCESS';
+export const CREATE_GUARANTEE_FAILURE = 'guarantees/CREATE_GUARANTEE_FAILURE';
+
+export const UPDATE_GUARANTEE_REQUEST = 'guarantees/UPDATE_GUARANTEE_REQUEST';
+export const UPDATE_GUARANTEE_SUCCESS = 'guarantees/UPDATE_GUARANTEE_SUCCESS';
+export const UPDATE_GUARANTEE_FAILURE = 'guarantees/UPDATE_GUARANTEE_FAILURE';
+
+export const DELETE_GUARANTEE_REQUEST = 'guarantees/DELETE_GUARANTEE_REQUEST';
+export const DELETE_GUARANTEE_SUCCESS = 'guarantees/DELETE_GUARANTEE_SUCCESS';
+export const DELETE_GUARANTEE_FAILURE = 'guarantees/DELETE_GUARANTEE_FAILURE';
+
+export const QUICK_UPDATE_GUARANTEE_REQUEST = 'guarantees/QUICK_UPDATE_GUARANTEE_REQUEST';
+export const QUICK_UPDATE_GUARANTEE_SUCCESS = 'guarantees/QUICK_UPDATE_GUARANTEE_SUCCESS';
+export const QUICK_UPDATE_GUARANTEE_FAILURE = 'guarantees/QUICK_UPDATE_GUARANTEE_FAILURE';
+
+export const BULK_UPDATE_GUARANTEES_REQUEST = 'guarantees/BULK_UPDATE_GUARANTEES_REQUEST';
+export const BULK_UPDATE_GUARANTEES_SUCCESS = 'guarantees/BULK_UPDATE_GUARANTEES_SUCCESS';
+export const BULK_UPDATE_GUARANTEES_FAILURE = 'guarantees/BULK_UPDATE_GUARANTEES_FAILURE';
+
+export const GET_STATISTICS_REQUEST = 'guarantees/GET_STATISTICS_REQUEST';
+export const GET_STATISTICS_SUCCESS = 'guarantees/GET_STATISTICS_SUCCESS';
+export const GET_STATISTICS_FAILURE = 'guarantees/GET_STATISTICS_FAILURE';
+
+export const GET_GROUPS_REQUEST = 'guarantees/GET_GROUPS_REQUEST';
+export const GET_GROUPS_SUCCESS = 'guarantees/GET_GROUPS_SUCCESS';
+export const GET_GROUPS_FAILURE = 'guarantees/GET_GROUPS_FAILURE';
+
+export const CREATE_GROUP_REQUEST = 'guarantees/CREATE_GROUP_REQUEST';
+export const CREATE_GROUP_SUCCESS = 'guarantees/CREATE_GROUP_SUCCESS';
+export const CREATE_GROUP_FAILURE = 'guarantees/CREATE_GROUP_FAILURE';
+
+export const UPDATE_GROUP_REQUEST = 'guarantees/UPDATE_GROUP_REQUEST';
+export const UPDATE_GROUP_SUCCESS = 'guarantees/UPDATE_GROUP_SUCCESS';
+export const UPDATE_GROUP_FAILURE = 'guarantees/UPDATE_GROUP_FAILURE';
+
+export const DELETE_GROUP_REQUEST = 'guarantees/DELETE_GROUP_REQUEST';
+export const DELETE_GROUP_SUCCESS = 'guarantees/DELETE_GROUP_SUCCESS';
+export const DELETE_GROUP_FAILURE = 'guarantees/DELETE_GROUP_FAILURE';
+
+export const ADD_NOTE_REQUEST = 'guarantees/ADD_NOTE_REQUEST';
+export const ADD_NOTE_SUCCESS = 'guarantees/ADD_NOTE_SUCCESS';
+export const ADD_NOTE_FAILURE = 'guarantees/ADD_NOTE_FAILURE';
+
+export const CONFIRM_GUARANTEE_REQUEST = 'guarantees/CONFIRM_GUARANTEE_REQUEST';
+export const CONFIRM_GUARANTEE_SUCCESS = 'guarantees/CONFIRM_GUARANTEE_SUCCESS';
+export const CONFIRM_GUARANTEE_FAILURE = 'guarantees/CONFIRM_GUARANTEE_FAILURE';
+
+export const BULK_CONFIRM_GUARANTEES_REQUEST = 'guarantees/BULK_CONFIRM_GUARANTEES_REQUEST';
+export const BULK_CONFIRM_GUARANTEES_SUCCESS = 'guarantees/BULK_CONFIRM_GUARANTEES_SUCCESS';
+export const BULK_CONFIRM_GUARANTEES_FAILURE = 'guarantees/BULK_CONFIRM_GUARANTEES_FAILURE';
+
+export const SET_GUARANTEE_FILTERS = 'guarantees/SET_GUARANTEE_FILTERS';
+export const CLEAR_GUARANTEE_ERROR = 'guarantees/CLEAR_GUARANTEE_ERROR';

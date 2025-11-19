@@ -1,0 +1,152 @@
+[
+  {
+    "key": "searchByFirstName",
+    "name": "Search by First Name (محمد)",
+    "payload": {
+      "sorting": "1",
+      "firstname": "محمد",
+      "secondname": "",
+      "thirdname": "",
+      "forthname": "",
+      "familyname": "",
+      "fullname": "",
+      "internal_reference_from": "",
+      "internal_reference_to": "",
+      "employer": "",
+      "team_icon": "",
+      "recordPerTime": "20",
+      "start_from": "0",
+      "search_public_elections": "30"
+    },
+    "result": {
+      "success": true,
+      "count": 897,
+      "records": 20
+    }
+  },
+  {
+    "key": "searchByFamilyName",
+    "name": "Search by Family Name (احمد)",
+    "payload": {
+      "sorting": "1",
+      "firstname": "",
+      "secondname": "",
+      "thirdname": "",
+      "forthname": "",
+      "familyname": "احمد",
+      "fullname": "",
+      "internal_reference_from": "",
+      "internal_reference_to": "",
+      "employer": "",
+      "team_icon": "",
+      "recordPerTime": "20",
+      "start_from": "0",
+      "search_public_elections": "30"
+    },
+    "result": {
+      "success": true,
+      "count": 48,
+      "records": 20
+    }
+  },
+  {
+    "key": "searchByFullName",
+    "name": "Search by Full Name",
+    "payload": {
+      "sorting": "1",
+      "firstname": "",
+      "secondname": "",
+      "thirdname": "",
+      "forthname": "",
+      "familyname": "",
+      "fullname": "علي محمد",
+      "internal_reference_from": "",
+      "internal_reference_to": "",
+      "employer": "",
+      "team_icon": "",
+      "recordPerTime": "20",
+      "start_from": "0",
+      "search_public_elections": "30"
+    },
+    "result": {
+      "success": true,
+      "count": 176,
+      "records": 20
+    }
+  },
+  {
+    "key": "searchByReferenceRange",
+    "name": "Search by Internal Reference Range",
+    "payload": {
+      "sorting": "1",
+      "firstname": "",
+      "secondname": "",
+      "thirdname": "",
+      "forthname": "",
+      "familyname": "",
+      "fullname": "",
+      "internal_reference_from": "80000",
+      "internal_reference_to": "80100",
+      "employer": "",
+      "team_icon": "",
+      "recordPerTime": "50",
+      "start_from": "0",
+      "search_public_elections": "30"
+    },
+    "result": {
+      "success": true,
+      "count": 89,
+      "records": 50
+    }
+  },
+  {
+    "key": "getAllRecords",
+    "name": "Get All Records (Page 1)",
+    "payload": {
+      "sorting": "1",
+      "firstname": "",
+      "secondname": "",
+      "thirdname": "",
+      "forthname": "",
+      "familyname": "",
+      "fullname": "",
+      "internal_reference_from": "",
+      "internal_reference_to": "",
+      "employer": "",
+      "team_icon": "",
+      "recordPerTime": "100",
+      "start_from": "0",
+      "search_public_elections": "30"
+    },
+    "result": {
+      "success": true,
+      "count": 8719,
+      "records": 100
+    }
+  },
+  {
+    "key": "getPage2",
+    "name": "Get All Records (Page 2)",
+    "payload": {
+      "sorting": "1",
+      "firstname": "",
+      "secondname": "",
+      "thirdname": "",
+      "forthname": "",
+      "familyname": "",
+      "fullname": "",
+      "internal_reference_from": "",
+      "internal_reference_to": "",
+      "employer": "",
+      "team_icon": "",
+      "recordPerTime": "100",
+      "start_from": "100",
+      "search_public_elections": "30"
+    },
+    "result": {
+      "success": true,
+      "count": 8719,
+      "records": 100
+    }
+  }
+]

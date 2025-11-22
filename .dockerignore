@@ -171,7 +171,7 @@ project example/
 
 # Node modules and build artifacts
 frontend/node_modules/
-frontend/dist/
+# frontend/dist/  # Commented out - needed for Dockerfile.frontend.simple
 frontend/build/
 frontend/.next/
 

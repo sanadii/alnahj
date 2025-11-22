@@ -1,4 +1,4 @@
-# RioWorkspace Backend Dockerfile
+# Election Management System Backend Dockerfile
 # Multi-stage build for optimized production image
 
 # Stage 1: Build stage
@@ -51,8 +51,9 @@ COPY backend/ /app/
 RUN mkdir -p /app/media /app/static /app/logs && \
     chown -R django:django /app
 
-# Switch to non-root user
-USER django
+# NOTE: we intentionally keep the container running as root so bind-mounted
+# volumes (such as SQLite DB and media directories) remain writable when
+# deploying to a single Droplet without extra permission plumbing.
 
 # Expose port
 EXPOSE 8000

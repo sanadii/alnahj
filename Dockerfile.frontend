@@ -1,4 +1,4 @@
-# RioWorkspace Frontend Dockerfile
+# Election Management System Frontend Dockerfile
 # Multi-stage build for optimized production image
 
 # Stage 1: Build stage
@@ -7,16 +7,17 @@ FROM node:18-alpine as builder
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY frontend/package*.json frontend/yarn.lock* ./
+# Enable Corepack to use the packageManager version from package.json
+RUN corepack enable
+
+# Copy all frontend files (needed for Yarn 4 PnP)
+COPY frontend/ .
 
 # Install dependencies
 RUN yarn install --frozen-lockfile --network-timeout 1000000
 
-# Copy source code
-COPY frontend/ .
-
-# Build the application
+# Build the application (increase Node.js memory for large builds, leave room for OS)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
 RUN yarn build
 
 # Stage 2: Production stage

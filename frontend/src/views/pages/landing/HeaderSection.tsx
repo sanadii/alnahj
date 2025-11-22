@@ -1,7 +1,5 @@
-'use client';
-
-// next
-import RouterLink from 'next/link';
+// react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 
 import { useMemo } from 'react';
 
@@ -131,8 +129,7 @@ export default function HeaderSection() {
                     <AnimateButton>
                       <Button
                         component={RouterLink}
-                        href={DASHBOARD_PATH}
-                        target="_blank"
+                        to={DASHBOARD_PATH}
                         size="large"
                         variant="contained"
                         color="secondary"

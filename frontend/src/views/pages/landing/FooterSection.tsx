@@ -1,6 +1,5 @@
-'use client';
-
-import RouterLink from 'next/link';
+// react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -53,7 +52,7 @@ export default function FooterSection() {
             <Grid container spacing={8}>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Stack spacing={{ xs: 2, md: 5 }}>
-                  <Link component={RouterLink} href="/" aria-label="theme-logo">
+                  <Link component={RouterLink} to="/" aria-label="theme-logo">
                     <CardMedia component="img" src="/assets/images/logo-dark.svg" alt="defaultLayout" sx={{ width: 'auto' }} />
                   </Link>
                   <Typography variant="body2" color={textColor}>

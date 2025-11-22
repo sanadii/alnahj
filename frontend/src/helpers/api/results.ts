@@ -4,7 +4,7 @@
  */
 
 import { APIClient } from '../api_helper';
-import { wrapResponse } from '../responseNormalizer';
+import { wrapResponse } from './responseNormalizer';
 import type { APIResponse } from 'types/api';
 
 const api = new APIClient();

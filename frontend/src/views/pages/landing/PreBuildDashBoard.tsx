@@ -1,7 +1,5 @@
-'use client';
-
-// next
-import Link from 'next/link';
+// react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -152,9 +150,8 @@ function Items({ title, caption, image, link }: ItemProps) {
         <Stack
           direction="row"
           spacing={1}
-          component={Link}
-          href={link}
-          target="_blank"
+          component={RouterLink}
+          to={link}
           sx={{ alignItems: 'center', justifyContent: 'center', textDecoration: 'none' }}
         >
           <Typography variant="h3" sx={{ fontWeight: 500 }}>

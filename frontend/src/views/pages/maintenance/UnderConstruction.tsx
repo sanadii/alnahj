@@ -1,7 +1,5 @@
-'use client';
-
-// next
-import Link from 'next/link';
+// react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -92,7 +90,7 @@ export default function UnderConstruction() {
                 </Grid>
                 <Grid size={12}>
                   <AnimateButton>
-                    <Button variant="contained" size="large" component={Link} href={DASHBOARD_PATH}>
+                    <Button variant="contained" size="large" component={RouterLink} to={DASHBOARD_PATH}>
                       <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> Home
                     </Button>
                   </AnimateButton>

@@ -1,7 +1,5 @@
-'use client';
-
-// next
-import Link from 'next/link';
+// react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -64,7 +62,7 @@ export default function Error() {
           The page you are looking was moved, removed, renamed, or might never exist!
         </Typography>
         <AnimateButton>
-          <Button variant="contained" size="large" component={Link} href={DASHBOARD_PATH}>
+          <Button variant="contained" size="large" component={RouterLink} to={DASHBOARD_PATH}>
             <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> Home
           </Button>
         </AnimateButton>

@@ -1,5 +1,5 @@
-// next
-import Link from 'next/link';
+// react-router-dom
+import { Link as RouterLink } from 'react-router-dom';
 
 // material-ui
 import Button from '@mui/material/Button';
@@ -31,7 +31,7 @@ export default function Error() {
           Server error 500. we fixing the problem. please try again at a later stage.
         </Typography>
         <AnimateButton>
-          <Button variant="contained" size="large" component={Link} href={DASHBOARD_PATH}>
+          <Button variant="contained" size="large" component={RouterLink} to={DASHBOARD_PATH}>
             <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> Home
           </Button>
         </AnimateButton>

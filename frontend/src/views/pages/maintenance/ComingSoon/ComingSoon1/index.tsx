@@ -1,9 +1,4 @@
-'use client';
-
 import { useState } from 'react';
-
-// next
-import Image from 'next/image';
 
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
@@ -182,12 +177,11 @@ export default function ComingSoon1() {
             title="Slider5 image"
             sx={{ position: 'absolute', bottom: -40, left: 50, width: 400, transform: 'rotate(145deg)' }}
           />
-          <Image
+          <Box
+            component="img"
             src={theme.palette.mode === ThemeMode.DARK ? logoDark : logo}
             alt="Berry"
-            width="100"
-            height={35}
-            style={{ maxWidth: '100%', height: 'auto' }}
+            sx={{ width: 100, height: 'auto', maxWidth: '100%' }}
           />
         </CardContent>
         <Grid container spacing={gridSpacing}>
@@ -373,12 +367,11 @@ export default function ComingSoon1() {
                               </Typography>
                             </Grid>
                             <Grid>
-                              <Image
+                              <Box
+                                component="img"
                                 src={theme.palette.mode === ThemeMode.DARK ? companyDarkLogo : companyLightLogo}
                                 alt="Berry"
-                                width={128}
-                                height={27}
-                                style={{ maxWidth: '100%', height: 'auto' }}
+                                sx={{ width: 128, height: 'auto', maxWidth: '100%' }}
                               />
                             </Grid>
                           </Grid>

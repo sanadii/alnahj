@@ -38,9 +38,9 @@ export const APP_AUTH: AuthProvider = AuthProvider.JWT;
 // Use relative URL in production (nginx proxies /api/ to backend)
 // Use absolute URL in development or if explicitly set
 export const API_BASE = import.meta.env.VITE_APP_API_URL || 
-  (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
+  (import.meta.env.MODE === 'production' ? '' : 'http://127.0.0.1:8000');
 const API_URL = import.meta.env.VITE_APP_API_URL || 
-  (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
+  (import.meta.env.MODE === 'production' ? '' : 'http://127.0.0.1:8000');
 
 const config: ConfigProps & { api: { API_URL: string; API_MEDIA: string } } = {
   menuOrientation: MenuOrientation.VERTICAL,

@@ -10,9 +10,9 @@ import { normalizeApiError, NormalizedApiError } from './apiError';
 
 // Use relative URL in production (nginx proxies /api/ to backend)
 // Use absolute URL in development or if explicitly set
-// Vite replaces import.meta.env.PROD at build time
-const BASE_URL = import.meta.env.VITE_APP_API_URL || 
-  (import.meta.env.PROD ? '/' : 'http://127.0.0.1:8000/');
+// Vite replaces import.meta.env at build time - check both MODE and PROD
+const isProduction = import.meta.env.MODE === 'production' || import.meta.env.PROD === true;
+const BASE_URL = import.meta.env.VITE_APP_API_URL || (isProduction ? '/' : 'http://127.0.0.1:8000/');
 const AUTH_USER_KEY = 'authUser';
 
 export interface RefreshableRequestConfig extends AxiosRequestConfig {

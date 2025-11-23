@@ -35,7 +35,12 @@ export enum DropzopType {
 export const APP_AUTH: AuthProvider = AuthProvider.JWT;
 
 // API Base URL
-export const API_BASE = import.meta.env.VITE_APP_API_URL || 'http://127.0.0.1:8000';
+// Use relative URL in production (nginx proxies /api/ to backend)
+// Use absolute URL in development or if explicitly set
+export const API_BASE = import.meta.env.VITE_APP_API_URL || 
+  (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
+const API_URL = import.meta.env.VITE_APP_API_URL || 
+  (import.meta.env.PROD ? '' : 'http://127.0.0.1:8000');
 
 const config: ConfigProps & { api: { API_URL: string; API_MEDIA: string } } = {
   menuOrientation: MenuOrientation.VERTICAL,
@@ -49,8 +54,8 @@ const config: ConfigProps & { api: { API_URL: string; API_MEDIA: string } } = {
   themeDirection: ThemeDirection.LTR,
   container: true,
   api: {
-    API_URL: 'http://127.0.0.1:8000',
-    API_MEDIA: 'http://127.0.0.1:8000/media/'
+    API_URL: API_URL,
+    API_MEDIA: `${API_URL}/media/`
   }
 };
 

@@ -8,7 +8,10 @@ import axios, {
 import { ACCOUNT_REFRESH } from 'helpers/urls/account';
 import { normalizeApiError, NormalizedApiError } from './apiError';
 
-const BASE_URL = import.meta.env.VITE_APP_API_URL || 'http://127.0.0.1:8000/';
+// Use relative URL in production (nginx proxies /api/ to backend)
+// Use absolute URL in development or if explicitly set
+const BASE_URL = import.meta.env.VITE_APP_API_URL || 
+  (import.meta.env.PROD ? '/' : 'http://127.0.0.1:8000/');
 const AUTH_USER_KEY = 'authUser';
 
 export interface RefreshableRequestConfig extends AxiosRequestConfig {

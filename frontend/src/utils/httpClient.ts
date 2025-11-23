@@ -10,13 +10,14 @@ import { normalizeApiError, NormalizedApiError } from './apiError';
 
 // Use relative URL in production (nginx proxies /api/ to backend)
 // Use absolute URL in development or if explicitly set
-// In production builds, Vite sets MODE to 'production'
+// In production builds, Vite sets MODE to 'production' and PROD to true
 const getBaseUrl = () => {
   if (import.meta.env.VITE_APP_API_URL) {
     return import.meta.env.VITE_APP_API_URL;
   }
   // Production build - use relative URL (nginx will proxy)
-  if (import.meta.env.MODE === 'production') {
+  // Check both MODE and PROD for maximum compatibility
+  if (import.meta.env.MODE === 'production' || import.meta.env.PROD === true) {
     return '/';
   }
   // Development - use localhost

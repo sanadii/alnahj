@@ -25,9 +25,9 @@ export default defineConfig(({ mode }) => {
       open: true,
       host: true
     },
-    define: {
-      global: 'window'
-    },
+        define: {
+          global: 'window'
+        },
     resolve: {
       alias: {
         // { find: '', replacement: path.resolve(__dirname, 'src') },

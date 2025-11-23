@@ -12,7 +12,11 @@ import { normalizeApiError, NormalizedApiError } from './apiError';
 // Use absolute URL in development or if explicitly set
 // Vite replaces import.meta.env at build time - check both MODE and PROD
 const isProduction = import.meta.env.MODE === 'production' || import.meta.env.PROD === true;
-const BASE_URL = import.meta.env.VITE_APP_API_URL || (isProduction ? '/' : 'http://127.0.0.1:8000/');
+// If VITE_APP_API_URL is explicitly set (even if empty string), use it
+// Otherwise, use relative URL in production, localhost in development
+const BASE_URL = import.meta.env.VITE_APP_API_URL !== undefined 
+  ? import.meta.env.VITE_APP_API_URL || '/'
+  : (isProduction ? '/' : 'http://127.0.0.1:8000/');
 const AUTH_USER_KEY = 'authUser';
 
 export interface RefreshableRequestConfig extends AxiosRequestConfig {
